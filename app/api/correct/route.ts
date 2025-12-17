@@ -31,13 +31,13 @@ export async function POST(req: NextRequest) {
       "Bevara person- och platsnamn som egennamn. Svara endast med den korrigerade texten utan förklaringar.";
 
     const completion = await openai.chat.completions.create({
-      model: MODEL,
-      messages: [
-        { role: "system", content: system },
-        { role: "user", content: text },
-      ],
-      temperature: 0.2,
-    });
+  model: MODEL,
+  messages: [
+    { role: "system", content: system },
+    { role: "user", content: text },
+  ],
+  // temperature removed because some models only support default value
+});
 
     const corrected = (completion.choices[0]?.message?.content ?? "").trim();
 
