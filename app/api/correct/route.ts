@@ -27,8 +27,8 @@ export async function POST(req: NextRequest) {
     const openai = new OpenAI({ apiKey: requireEnv("OPENAI_API_KEY") });
 
     const system =
-      "Du är en svensk korrekturläsare. Korrigera stavning, grammatik och versaler utan att ändra betydelsen. " +
-      "Bevara person- och platsnamn som egennamn. Svara endast med den korrigerade texten utan förklaringar.";
+  "Du är en professionell svensk korrekturläsare. Rätta stavning, grammatik, särskrivningar och versaler. Bevara stil och betydelse. Svara endast med den korrigerade texten.";
+
 
     const completion = await openai.chat.completions.create({
   model: MODEL,
