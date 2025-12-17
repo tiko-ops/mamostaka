@@ -12,6 +12,7 @@ export async function POST(req: NextRequest) {
     if (typeof text !== "string" || !text.trim()) {
       return NextResponse.json({ error: "Ingen text angiven." }, { status: 400 });
     }
+
     if (text.length > MAX) {
       return NextResponse.json(
         { error: `Texten får vara max ${MAX} tecken.` },
@@ -19,19 +20,17 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
     const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) {
-      return NextResponse.json(
-        { error: "Missing OPENAI_API_KEY" },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: "Missing OPENAI_API_KEY" }, { status: 500 });
     }
+
+    const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
 
     const system =
       "Du är en professionell svensk korrekturläsare. Rätta stavning, grammatik, särskrivningar och versaler. Bevara stil och betydelse. Svara endast med den korrigerade texten.";
 
-    // Call OpenAI with streaming
+    // Streaming via fetch (stabilt på Vercel/Next)
     const upstream = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -45,7 +44,7 @@ export async function POST(req: NextRequest) {
           { role: "system", content: system },
           { role: "user", content: text },
         ],
-        // IMPORTANT: don't set temperature (some models only allow default)
+        // Sätt INTE temperature här (vissa modeller kräver default)
       }),
     });
 
@@ -57,7 +56,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Convert OpenAI SSE stream -> plain text stream
     const encoder = new TextEncoder();
     const decoder = new TextDecoder();
 
@@ -74,14 +72,12 @@ export async function POST(req: NextRequest) {
 
             buffer += decoder.decode(value, { stream: true });
 
-            // OpenAI sends SSE lines like: "data: {...}\n\n"
+            // OpenAI SSE kommer som "data: {...}\n\n"
             const parts = buffer.split("\n\n");
             buffer = parts.pop() || "";
 
             for (const part of parts) {
-              const line = part
-                .split("\n")
-                .find((l) => l.startsWith("data: "));
+              const line = part.split("\n").find((l) => l.startsWith("data: "));
               if (!line) continue;
 
               const data = line.slice("data: ".length).trim();
@@ -95,12 +91,13 @@ export async function POST(req: NextRequest) {
                 const delta = json?.choices?.[0]?.delta?.content;
                 if (delta) controller.enqueue(encoder.encode(delta));
               } catch {
-                // ignore malformed chunks
+                // ignorera trasiga chunks
               }
             }
           }
-        } catch (e) {
+        } catch {
           controller.enqueue(encoder.encode("\n[Fel vid strömning]"));
+        } finally {
           controller.close();
         }
       },
