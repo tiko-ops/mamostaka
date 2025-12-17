@@ -1,16 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import OpenAI from "openai";
 
 export const runtime = "nodejs";
 
 const MAX = 10000;
-const MODEL = process.env.OPENAI_MODEL || "gpt-4o-mini";
-
-function requireEnv(name: string) {
-  const v = process.env[name];
-  if (!v) throw new Error(`Missing environment variable: ${name}`);
-  return v;
-}
 
 export async function POST(req: NextRequest) {
   try {
@@ -21,31 +13,106 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Ingen text angiven." }, { status: 400 });
     }
     if (text.length > MAX) {
-      return NextResponse.json({ error: `Texten får vara max ${MAX} tecken.` }, { status: 400 });
+      return NextResponse.json(
+        { error: `Texten får vara max ${MAX} tecken.` },
+        { status: 400 }
+      );
     }
 
-    const openai = new OpenAI({ apiKey: requireEnv("OPENAI_API_KEY") });
+    const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json(
+        { error: "Missing OPENAI_API_KEY" },
+        { status: 500 }
+      );
+    }
 
     const system =
-  "Du är en professionell svensk korrekturläsare. Rätta stavning, grammatik, särskrivningar och versaler. Bevara stil och betydelse. Svara endast med den korrigerade texten.";
+      "Du är en professionell svensk korrekturläsare. Rätta stavning, grammatik, särskrivningar och versaler. Bevara stil och betydelse. Svara endast med den korrigerade texten.";
 
+    // Call OpenAI with streaming
+    const upstream = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model,
+        stream: true,
+        messages: [
+          { role: "system", content: system },
+          { role: "user", content: text },
+        ],
+        // IMPORTANT: don't set temperature (some models only allow default)
+      }),
+    });
 
-    const completion = await openai.chat.completions.create({
-  model: MODEL,
-  messages: [
-    { role: "system", content: system },
-    { role: "user", content: text },
-  ],
-  // temperature removed because some models only support default value
-});
+    if (!upstream.ok || !upstream.body) {
+      const errText = await upstream.text().catch(() => "");
+      return NextResponse.json(
+        { error: "OpenAI request failed", details: errText },
+        { status: 500 }
+      );
+    }
 
-    const corrected = (completion.choices[0]?.message?.content ?? "").trim();
+    // Convert OpenAI SSE stream -> plain text stream
+    const encoder = new TextEncoder();
+    const decoder = new TextDecoder();
 
-    return new Response(corrected, {
-      headers: { "Content-Type": "text/plain; charset=utf-8" },
+    let buffer = "";
+
+    const stream = new ReadableStream<Uint8Array>({
+      async start(controller) {
+        const reader = upstream.body!.getReader();
+
+        try {
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+
+            // OpenAI sends SSE lines like: "data: {...}\n\n"
+            const parts = buffer.split("\n\n");
+            buffer = parts.pop() || "";
+
+            for (const part of parts) {
+              const line = part
+                .split("\n")
+                .find((l) => l.startsWith("data: "));
+              if (!line) continue;
+
+              const data = line.slice("data: ".length).trim();
+              if (data === "[DONE]") {
+                controller.close();
+                return;
+              }
+
+              try {
+                const json = JSON.parse(data);
+                const delta = json?.choices?.[0]?.delta?.content;
+                if (delta) controller.enqueue(encoder.encode(delta));
+              } catch {
+                // ignore malformed chunks
+              }
+            }
+          }
+        } catch (e) {
+          controller.enqueue(encoder.encode("\n[Fel vid strömning]"));
+          controller.close();
+        }
+      },
+    });
+
+    return new Response(stream, {
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "no-cache, no-transform",
+      },
     });
   } catch (err: any) {
-    console.error("API error:", err);
     return NextResponse.json(
       { error: "Serverfel i /api/correct", details: err?.message ?? String(err) },
       { status: 500 }
