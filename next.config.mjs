@@ -6,6 +6,9 @@ const nextConfig = {
       beforeFiles: [
         { source: "/", destination: "/index.html" },
         { source: "/integritet", destination: "/integritet.html" },
+        { source: "/guider", destination: "/guider/index.html" },
+        // Bara slugs utan punkt, så att /guider/index.html inte skrivs om en gång till
+        { source: "/guider/:slug([a-z0-9-]+)", destination: "/guider/:slug.html" },
       ],
     };
   },
