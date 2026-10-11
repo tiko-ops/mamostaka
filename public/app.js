@@ -20,7 +20,7 @@
     kortare: "Rättar fel och kortar ner texten till det viktigaste.",
   };
   const RTL = new Set(["ar", "ckb"]);
-  const ARABIC_SCRIPT = /[؀-ۿ]/;
+  const ARABIC_SCRIPT = /[\u0600-\u06FF]/;
 
   const $ = (id) => document.getElementById(id);
   const form = $("form");
