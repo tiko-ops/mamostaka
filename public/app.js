@@ -6,19 +6,13 @@
   const EXPLAIN_TIMEOUT_MS = 40_000;
   // Markör som API:t lägger till om strömningen avbryts
   const STREAM_ERROR = "[Fel vid strömning]";
-  // Över så här många ändringar visas bara den färdiga texten
+  // Över så här många ändringar visas bara den korrigerade texten
   const MAX_EDITS = 2000;
   // Så många ändringar förklaras (samma gräns som i API:t)
   const MAX_EXPLAIN = 40;
   const CONTEXT_CHARS = 50;
   const LANG_KEY = "mamosta-lang";
 
-  const MODE_HINTS = {
-    ratta: "Rättar stavning, grammatik och särskrivningar. Din stil behålls.",
-    formell: "Rättar fel och gör texten mer formell och professionell.",
-    enkel: "Rättar fel och skriver om med korta meningar och vanliga ord.",
-    kortare: "Rättar fel och kortar ner texten till det viktigaste.",
-  };
   const RTL = new Set(["ar", "ckb"]);
   const ARABIC_SCRIPT = /[\u0600-\u06FF]/;
 
@@ -26,7 +20,6 @@
   const form = $("form");
   const input = $("text");
   const counter = $("counter");
-  const modeHint = $("mode-hint");
   const submitBtn = $("submit");
   const submitLabel = submitBtn.querySelector(".label");
   const clearBtn = $("clear");
@@ -43,7 +36,6 @@
   const changesNote = $("changes-note");
   const langSelect = $("lang");
   const viewBtns = document.querySelectorAll("[data-view]");
-  const modeInputs = form.querySelectorAll('input[name="mode"]');
 
   const nf = new Intl.NumberFormat("sv-SE");
 
@@ -52,7 +44,6 @@
   let loading = false;
   let original = "";
   let corrected = "";
-  let mode = "ratta";
   let chunks = null; // null = ingen diff tillgänglig
   let listed = []; // index i chunks för ändringar som visas i "Vad ändrades?"
   let reasonsByLang = {};
@@ -64,8 +55,6 @@
     const saved = localStorage.getItem(LANG_KEY);
     if (saved && langSelect.querySelector(`option[value="${saved}"]`)) langSelect.value = saved;
   } catch {}
-
-  const selectedMode = () => form.querySelector('input[name="mode"]:checked').value;
 
   // ---------- Teckenräknare ----------
 
@@ -147,7 +136,6 @@
 
     original = text;
     corrected = "";
-    mode = selectedMode();
     chunks = null;
     listed = [];
     reasonsByLang = {};
@@ -166,7 +154,7 @@
       const res = await fetch("/api/correct", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, mode }),
+        body: JSON.stringify({ text }),
         signal: ac.signal,
       });
 
@@ -228,14 +216,12 @@
     chunks = diffWords(original, corrected);
     const total = chunks ? chunks.filter(isChange).length : null;
 
-    // Rättningsläget visar ändringarna; omskrivningarna visar texten direkt
-    const rewrite = mode !== "ratta";
-    const initialView = rewrite || !chunks || total === 0 ? "plain" : view;
+    const initialView = !chunks || total === 0 ? "plain" : view;
 
     updateSummary();
     setView(initialView, { remember: false });
 
-    if (!rewrite && total > 0) {
+    if (total > 0) {
       listed = chunks
         .map((c, i) => (isChange(c) && (c.del.trim() || c.ins.trim()) ? i : -1))
         .filter((i) => i >= 0);
@@ -249,14 +235,13 @@
 
   function updateSummary() {
     if (!chunks) {
-      summary.textContent = mode === "ratta" ? "Texten har skrivits om mycket." : "Texten är omskriven.";
+      summary.textContent = "Texten har skrivits om mycket.";
       return;
     }
     const changes = chunks.filter(isChange);
     const undone = changes.filter((c) => c.rejected).length;
     if (changes.length === 0) {
-      summary.textContent =
-        mode === "ratta" ? "Inga fel hittades – texten ser bra ut." : "Texten behövde inga ändringar.";
+      summary.textContent = "Inga fel hittades – texten ser bra ut.";
       return;
     }
     let text = changes.length === 1 ? "1 ändring" : `${nf.format(changes.length)} ändringar`;
@@ -676,7 +661,7 @@
     const message = ok ? "Kopierat!" : "Kunde inte kopiera";
     copyBtn.textContent = message;
     statusEl.textContent = ok
-      ? "Den färdiga texten är kopierad."
+      ? "Den korrigerade texten är kopierad."
       : "Kunde inte kopiera. Markera texten och kopiera den själv.";
     clearTimeout(copy.timer);
     copy.timer = setTimeout(() => (copyBtn.textContent = "Kopiera"), 2500);
@@ -733,9 +718,6 @@
     e.preventDefault();
     correct();
   });
-  modeInputs.forEach((r) =>
-    r.addEventListener("change", () => (modeHint.textContent = MODE_HINTS[selectedMode()]))
-  );
   clearBtn.addEventListener("click", clearAll);
   copyBtn.addEventListener("click", copy);
   viewBtns.forEach((b) => b.addEventListener("click", () => setView(b.dataset.view)));
@@ -751,6 +733,5 @@
     if (listed.length) loadReasons();
   });
 
-  modeHint.textContent = MODE_HINTS[selectedMode()];
   updateCounter();
 })();
