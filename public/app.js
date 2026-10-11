@@ -495,24 +495,46 @@
     "stor-eller-liten-bokstav": "Stor eller liten bokstav?",
   };
 
+  const I_WORDS = /^i ?(dag|går|morgon|kväll|stället|alla ?fall)$/;
+  const WORD_GUIDES = [
+    [["de", "dem", "dom"], "de-eller-dem"],
+    [["var", "vart", "blev"], "var-eller-vart"],
+    [["och", "att", "å"], "och-eller-att"],
+    [["sin", "sitt", "sina", "hans", "hennes", "deras"], "sin-eller-hans"],
+  ];
+
   function guideFor(from, to) {
     const f = from.trim();
     const t = to.trim();
     const lf = f.toLowerCase();
     const lt = t.toLowerCase();
-    const both = (set) => set.includes(lf) && set.includes(lt);
+    if (f === t) return null;
     let slug = null;
 
-    if (both(["de", "dem", "dom"])) slug = "de-eller-dem";
-    else if (both(["var", "vart", "blev"])) slug = "var-eller-vart";
-    else if (both(["och", "att", "å"])) slug = "och-eller-att";
-    else if (both(["sin", "sitt", "sina", "hans", "hennes", "deras"])) slug = "sin-eller-hans";
-    else if (/,/.test(f + t) && lf.replace(/,/g, "") === lt.replace(/,/g, "")) slug = "komma";
-    else if (f !== t && lf.replace(/[\s-]/g, "") === lt.replace(/[\s-]/g, "") && /\s/.test(f + t)) {
-      slug = /^i ?(dag|går|morgon|kväll|stället|alla ?fall)$/.test(lf) || /^i ?(dag|går|morgon|kväll|stället|alla ?fall)$/.test(lt)
-        ? "ihop-eller-isar"
-        : "sarskrivning";
-    } else if (f !== t && lf === lt) slug = "stor-eller-liten-bokstav";
+    const noSpace = (s) => s.replace(/[\s,-]/g, "");
+    const noComma = (s) => s.replace(/,/g, "");
+    if (noSpace(lf) === noSpace(lt) && noComma(lf) !== noComma(lt)) {
+      // Samma bokstäver, olika mellanrum: särskrivning eller i dag/idag
+      slug = I_WORDS.test(noComma(lf)) || I_WORDS.test(noComma(lt)) ? "ihop-eller-isar" : "sarskrivning";
+    } else if (noComma(lf) === noComma(lt) && noComma(f) === noComma(t)) {
+      slug = "komma";
+    } else {
+      const fw = noComma(f).split(/\s+/).filter(Boolean);
+      const tw = noComma(t).split(/\s+/).filter(Boolean);
+      const rule = (a, b) => {
+        const la = a.toLowerCase();
+        const lb = b.toLowerCase();
+        for (const [set, g] of WORD_GUIDES) {
+          if ((set.includes(la) || !la) && (set.includes(lb) || !lb) && (la || lb)) return g;
+        }
+        return a !== b && la === lb ? "stor-eller-liten-bokstav" : null;
+      };
+      if (fw.length === tw.length) {
+        for (let k = 0; k < fw.length && !slug; k++) if (fw[k] !== tw[k]) slug = rule(fw[k], tw[k]);
+      } else if (fw.length + tw.length === 1) {
+        slug = rule(fw[0] || "", tw[0] || "");
+      }
+    }
 
     return slug ? { slug, name: GUIDES[slug] } : null;
   }
