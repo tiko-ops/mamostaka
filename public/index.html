@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mamosta – Rätta din svenska text gratis</title>
+  <meta name="description" content="Rätta stavfel, särskrivningar och grammatik i din svenska text på några sekunder. Gratis, utan konto – och din text sparas inte.">
+  <link rel="canonical" href="https://www.mamosta.se/">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f7f6f2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#161716" media="(prefers-color-scheme: dark)">
+
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="sv_SE">
+  <meta property="og:site_name" content="Mamosta">
+  <meta property="og:title" content="Mamosta – Rätta din svenska text gratis">
+  <meta property="og:description" content="Rätta stavfel, särskrivningar och grammatik på några sekunder. Gratis, utan konto – din text sparas inte.">
+  <meta property="og:url" content="https://www.mamosta.se/">
+  <meta property="og:image" content="https://www.mamosta.se/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Mamosta – rätta din svenska text">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/styles.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Mamosta",
+    "url": "https://www.mamosta.se/",
+    "description": "Gratis rättning av stavning, särskrivningar och grammatik i svensk text.",
+    "inLanguage": "sv",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Alla",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "SEK" }
+  }
+  </script>
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#text">Hoppa till textfältet</a>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="logo" href="/" aria-label="Mamosta, startsida">Mamosta</a>
+      <nav aria-label="Huvudmeny">
+        <a href="/integritet">Integritet</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="intro">
+      <h1>Rätta din svenska text</h1>
+      <p class="lead">Stavfel, särskrivningar och grammatik – rättat på några sekunder. Gratis och utan konto.</p>
+    </section>
+
+    <form id="form" class="editor" novalidate>
+      <label for="text" class="visually-hidden">Text att korrigera</label>
+      <textarea id="text" name="text" rows="10" spellcheck="false" autocomplete="off"
+        placeholder="Klistra in din text här…" aria-describedby="counter error"></textarea>
+
+      <div class="meta">
+        <span class="hint" aria-hidden="true"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> för att korrigera</span>
+        <span id="counter" class="counter">0 / 5 000 tecken</span>
+      </div>
+
+      <p id="error" class="error" role="alert" hidden></p>
+
+      <div class="actions">
+        <button id="submit" type="submit" class="btn btn-primary">
+          <span class="spinner" aria-hidden="true"></span>
+          <span class="label">Korrigera</span>
+        </button>
+        <button id="clear" type="button" class="btn btn-ghost">Rensa</button>
+      </div>
+      <p class="note">Din text sparas inte.</p>
+    </form>
+
+    <section id="result" class="result" aria-labelledby="result-title" hidden>
+      <div class="result-head">
+        <h2 id="result-title" tabindex="-1">Resultat</h2>
+        <p id="summary" class="summary"></p>
+      </div>
+
+      <div class="toolbar">
+        <div class="toggle" role="group" aria-label="Visa">
+          <button type="button" class="toggle-btn" data-view="diff" aria-pressed="true">Ändringar</button>
+          <button type="button" class="toggle-btn" data-view="plain" aria-pressed="false">Korrigerad text</button>
+        </div>
+        <button id="copy" type="button" class="btn btn-secondary">Kopiera</button>
+      </div>
+
+      <div id="output" class="output" aria-live="off"></div>
+
+      <p class="legend" id="legend">
+        <del>Överstruket</del> är borttaget, <ins>markerat</ins> är tillagt.
+      </p>
+    </section>
+
+    <p id="status" class="visually-hidden" role="status" aria-live="polite"></p>
+
+    <section class="about" aria-labelledby="about-title">
+      <h2 id="about-title">Vad rättas?</h2>
+      <ul>
+        <li><strong>Stavfel</strong> – till exempel <em>egentligen</em> i stället för <em>egentlien</em>.</li>
+        <li><strong>Särskrivningar</strong> – <em>sjuksköterska</em>, inte <em>sjuk sköterska</em>.</li>
+        <li><strong>Grammatik</strong> – som <em>de</em> och <em>dem</em>, böjningar och ordföljd.</li>
+        <li><strong>Stor bokstav</strong> – i början av meningar och i namn.</li>
+      </ul>
+      <p>Din stil och det du vill säga behålls. Texten skickas krypterat för att rättas och sparas inte av Mamosta. Vi använder inga cookies.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>© Mamosta · <a href="/integritet">Integritet</a> · Inga cookies</p>
+    </div>
+  </footer>
+</body>
+</html>

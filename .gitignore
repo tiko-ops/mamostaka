@@ -1,0 +1,10 @@
+node_modules/
+.next/
+out/
+.vercel/
+*.tsbuildinfo
+
+# Hemligheter – checka aldrig in riktiga nycklar
+.env
+.env.*
+!.env.example
