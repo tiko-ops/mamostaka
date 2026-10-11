@@ -1,6 +1,6 @@
 # Mamosta
 
-Enkel svensk texträttning på [www.mamosta.se](https://www.mamosta.se). Klistra in en text, tryck **Korrigera** och se rättningen med markerade ändringar och förklaringar. Texten kan också göras formellare, enklare eller kortare, och det finns språkguider om vanliga fel.
+Enkel svensk texträttning på [www.mamosta.se](https://www.mamosta.se). Klistra in en text, tryck **Korrigera** och se rättningen med markerade ändringar och förklaringar. Det finns också språkguider om vanliga fel.
 
 ## Struktur
 
@@ -9,11 +9,12 @@ public/               Gränssnittet – statisk HTML, CSS och vanilla JS (inget 
   index.html          Startsidan
   integritet.html     Integritetssidan
   styles.css          All CSS, designtokens som CSS-variabler (ljust + mörkt läge)
-  app.js              Lägen, anrop, ord-diff, ångra, förklaringar, kopiera, felhantering
+  app.js              Anrop, ord-diff, ångra, förklaringar, kopiera, felhantering
   guider/             Genererade guidesidor (redigera inte här – se nedan)
   robots.txt, sitemap.xml, favicon.svg, apple-touch-icon.png, og-image.png
 content/guider/       Texterna till guiderna (HTML + metadata överst)
-scripts/build-guides.mjs  Bygger public/guider/ och sitemap.xml från content/guider/
+scripts/build.mjs     Bygger guiderna och sitemap.xml, och sätter versionsnummer på CSS/JS
+pages/404.tsx         Svensk 404-sida (enda React-sidan)
 app/api/correct/      API:t (Next.js route handler) – det enda som körs på servern
 next.config.mjs       Pekar /, /integritet och /guider/... till de statiska filerna
 archive/              Den gamla React-versionen av sidorna (används inte)
@@ -25,13 +26,13 @@ Next.js används bara för API-routen. Sidorna är vanliga statiska filer.
 
 `POST /api/correct` har två lägen.
 
-**Rätta eller skriva om** – svaret strömmas som `text/plain`:
+**Rätta** – svaret strömmas som `text/plain`:
 
 ```json
-{ "text": "Din text, max 5000 tecken", "mode": "ratta" }
+{ "text": "Din text, max 5000 tecken" }
 ```
 
-`mode` är valfritt: `ratta` (standard), `formell`, `enkel` eller `kortare`. Om strömningen avbryts slutar svaret med `[Fel vid strömning]`.
+Om strömningen avbryts slutar svaret med `[Fel vid strömning]`.
 
 **Förklara ändringar** – svaret är JSON `{ "reasons": ["...", ...] }`, en per ändring:
 
@@ -75,13 +76,19 @@ npm run dev
 
 ## Guider
 
-Guiderna på `/guider` är statiska sidor. Ändra eller lägg till texter i `content/guider/` (ny guide: lägg också till dess namn i `ORDER` i skriptet) och kör:
+Guiderna på `/guider` är statiska sidor. Ändra eller lägg till texter i `content/guider/` (ny guide: lägg också till dess namn i `ORDER` i `scripts/build.mjs`) och kör:
 
 ```bash
-node scripts/build-guides.mjs
+node scripts/build.mjs
 ```
 
 Skriptet skriver `public/guider/*.html`, hubbsidan `/guider` och en ny `public/sitemap.xml`. Checka in resultatet.
+
+## Snabbhet och cache
+
+- `styles.css` och `app.js` länkas med `?v=hash` och cachas i ett år (`immutable`). Hashen sätts av `scripts/build.mjs`, som körs automatiskt i `npm run build` – även på Vercel – så en ändring i CSS/JS når besökarna direkt vid nästa deploy.
+- HTML-sidorna cachas i Vercels CDN men kontrolleras alltid av webbläsaren, så nytt innehåll syns direkt.
+- Interna länkar förhandsladdas när man håller musen över dem (*speculation rules*, Chrome/Edge), och sidbyten tonar mjukt (*view transitions*).
 
 ## Skydd mot höga kostnader
 

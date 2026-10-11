@@ -24,7 +24,10 @@
 
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/styles.css?v=abc51a9ab9">
+  <script type="speculationrules">
+  {"prerender": [{"where": {"and": [{"href_matches": "/*"}, {"not": {"href_matches": "/api/*"}}]}, "eagerness": "moderate"}]}
+  </script>
 
   <script type="application/ld+json">
   {
@@ -39,7 +42,7 @@
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "SEK" }
   }
   </script>
-  <script src="/app.js" defer></script>
+  <script src="/app.js?v=4fdb8e0491" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#text">Hoppa till textfältet</a>
@@ -61,18 +64,9 @@
     </section>
 
     <form id="form" class="editor" novalidate>
-      <fieldset class="modes">
-        <legend class="visually-hidden">Vad vill du göra med texten?</legend>
-        <label><input type="radio" name="mode" value="ratta" checked><span>Rätta</span></label>
-        <label><input type="radio" name="mode" value="formell"><span>Formellare</span></label>
-        <label><input type="radio" name="mode" value="enkel"><span>Enklare</span></label>
-        <label><input type="radio" name="mode" value="kortare"><span>Kortare</span></label>
-      </fieldset>
-      <p id="mode-hint" class="mode-hint">Rättar stavning, grammatik och särskrivningar. Din stil behålls.</p>
-
       <label for="text" class="visually-hidden">Text att korrigera</label>
       <textarea id="text" name="text" rows="10" spellcheck="false" autocomplete="off"
-        placeholder="Klistra in din text här…" aria-describedby="mode-hint counter error"></textarea>
+        placeholder="Klistra in din text här…" aria-describedby="counter error"></textarea>
 
       <div class="meta">
         <span class="hint" aria-hidden="true"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> för att korrigera</span>
@@ -100,7 +94,7 @@
       <div class="toolbar">
         <div class="toggle" role="group" aria-label="Visa">
           <button type="button" class="toggle-btn" data-view="diff" aria-pressed="true">Ändringar</button>
-          <button type="button" class="toggle-btn" data-view="plain" aria-pressed="false">Färdig text</button>
+          <button type="button" class="toggle-btn" data-view="plain" aria-pressed="false">Korrigerad text</button>
         </div>
         <button id="copy" type="button" class="btn btn-secondary">Kopiera</button>
       </div>
@@ -141,7 +135,7 @@
         <li><strong>Grammatik</strong> – som <a href="/guider/de-eller-dem"><em>de</em> och <em>dem</em></a>, <a href="/guider/sin-eller-hans"><em>sin</em> och <em>hans</em></a>, böjningar och ordföljd.</li>
         <li><strong><a href="/guider/komma">Kommatering</a></strong> och <strong><a href="/guider/stor-eller-liten-bokstav">stor bokstav</a></strong>.</li>
       </ul>
-      <p>Varje ändring förklaras kort, och du kan ångra de ändringar du inte vill ha. Vill du hellre skriva om texten? Välj <em>Formellare</em>, <em>Enklare</em> eller <em>Kortare</em>.</p>
+      <p>Varje ändring förklaras kort, och du kan ångra de ändringar du inte vill ha.</p>
 
       <h2>Lär du dig svenska?</h2>
       <p>Få förklaringarna på enkel svenska, engelska, arabiska eller kurdiska. Då lär du dig av dina misstag – inte bara rättar dem.</p>
