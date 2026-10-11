@@ -20,6 +20,7 @@
     kortare: "Rättar fel och kortar ner texten till det viktigaste.",
   };
   const RTL = new Set(["ar", "ckb"]);
+  const ARABIC_SCRIPT = /[؀-ۿ]/;
 
   const $ = (id) => document.getElementById(id);
   const form = $("form");
@@ -417,7 +418,7 @@
       if (reasons && reasons[n]) {
         p.textContent = reasons[n];
         p.lang = lang === "sv-enkel" ? "sv" : lang;
-        if (RTL.has(lang)) p.dir = "rtl";
+        if (RTL.has(lang) && ARABIC_SCRIPT.test(reasons[n])) p.dir = "rtl";
       } else if (state === "loading") {
         p.textContent = "Hämtar förklaring…";
         p.classList.add("muted");
