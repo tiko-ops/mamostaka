@@ -26,6 +26,7 @@
       <a class="logo" href="/" aria-label="Mamosta, startsida">Mamosta</a>
       <nav aria-label="Huvudmeny">
         <a href="/">Rätta text</a>
+        <a href="/guider">Guider</a>
       </nav>
     </div>
   </header>
@@ -40,10 +41,13 @@
       <li>Texten skickas krypterat (HTTPS) till vår server och vidare till vår AI-leverantör OpenAI, som gör själva rättningen.</li>
       <li>Mamosta sparar inte texten och loggar den inte. När du stänger eller rensar sidan finns den inte kvar hos oss.</li>
       <li>OpenAI använder inte texter som skickas via deras API för att träna sina modeller.</li>
+      <li>När du ber om förklaringar skickas bara de ändrade orden och några ord runt dem.</li>
     </ul>
 
     <h2>Cookies och spårning</h2>
     <p>Vi använder inga cookies, ingen analys och inga spårningsskript. Vi behöver inget konto eller några personuppgifter från dig.</p>
+    <p>För att stoppa missbruk räknar servern hur många rättningar som görs från varje IP-adress under tio minuter. IP-adressen finns bara tillfälligt i serverns minne och sparas eller loggas inte.</p>
+    <p>Om du väljer ett språk för förklaringarna kommer webbläsaren ihåg ditt val (i <em>localStorage</em>). Det stannar på din enhet och skickas aldrig till oss.</p>
 
     <h2>Tips</h2>
     <p>Undvik att klistra in känsliga uppgifter som personnummer, lösenord eller hälsouppgifter.</p>
@@ -53,7 +57,7 @@
 
   <footer class="site-footer">
     <div class="wrap">
-      <p>© Mamosta · Inga cookies</p>
+      <p>© Mamosta · <a href="/guider">Guider</a> · Inga cookies</p>
     </div>
   </footer>
 </body>

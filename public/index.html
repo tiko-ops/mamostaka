@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Mamosta – Rätta din svenska text gratis</title>
-  <meta name="description" content="Rätta stavfel, särskrivningar och grammatik i din svenska text på några sekunder. Gratis, utan konto – och din text sparas inte.">
+  <meta name="description" content="Rätta stavfel, särskrivningar och grammatik i din svenska text – med förklaringar till varje ändring. Gratis, utan konto, och din text sparas inte.">
   <link rel="canonical" href="https://www.mamosta.se/">
   <meta name="color-scheme" content="light dark">
   <meta name="theme-color" content="#f7f6f2" media="(prefers-color-scheme: light)">
@@ -32,7 +32,7 @@
     "@type": "WebApplication",
     "name": "Mamosta",
     "url": "https://www.mamosta.se/",
-    "description": "Gratis rättning av stavning, särskrivningar och grammatik i svensk text.",
+    "description": "Gratis rättning av stavning, särskrivningar och grammatik i svensk text, med förklaringar.",
     "inLanguage": "sv",
     "applicationCategory": "UtilitiesApplication",
     "operatingSystem": "Alla",
@@ -48,6 +48,7 @@
     <div class="wrap">
       <a class="logo" href="/" aria-label="Mamosta, startsida">Mamosta</a>
       <nav aria-label="Huvudmeny">
+        <a href="/guider">Guider</a>
         <a href="/integritet">Integritet</a>
       </nav>
     </div>
@@ -56,13 +57,22 @@
   <main class="wrap">
     <section class="intro">
       <h1>Rätta din svenska text</h1>
-      <p class="lead">Stavfel, särskrivningar och grammatik – rättat på några sekunder. Gratis och utan konto.</p>
+      <p class="lead">Stavfel, särskrivningar och grammatik – rättat och förklarat på några sekunder. Gratis och utan konto.</p>
     </section>
 
     <form id="form" class="editor" novalidate>
+      <fieldset class="modes">
+        <legend class="visually-hidden">Vad vill du göra med texten?</legend>
+        <label><input type="radio" name="mode" value="ratta" checked><span>Rätta</span></label>
+        <label><input type="radio" name="mode" value="formell"><span>Formellare</span></label>
+        <label><input type="radio" name="mode" value="enkel"><span>Enklare</span></label>
+        <label><input type="radio" name="mode" value="kortare"><span>Kortare</span></label>
+      </fieldset>
+      <p id="mode-hint" class="mode-hint">Rättar stavning, grammatik och särskrivningar. Din stil behålls.</p>
+
       <label for="text" class="visually-hidden">Text att korrigera</label>
       <textarea id="text" name="text" rows="10" spellcheck="false" autocomplete="off"
-        placeholder="Klistra in din text här…" aria-describedby="counter error"></textarea>
+        placeholder="Klistra in din text här…" aria-describedby="mode-hint counter error"></textarea>
 
       <div class="meta">
         <span class="hint" aria-hidden="true"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> för att korrigera</span>
@@ -90,7 +100,7 @@
       <div class="toolbar">
         <div class="toggle" role="group" aria-label="Visa">
           <button type="button" class="toggle-btn" data-view="diff" aria-pressed="true">Ändringar</button>
-          <button type="button" class="toggle-btn" data-view="plain" aria-pressed="false">Korrigerad text</button>
+          <button type="button" class="toggle-btn" data-view="plain" aria-pressed="false">Färdig text</button>
         </div>
         <button id="copy" type="button" class="btn btn-secondary">Kopiera</button>
       </div>
@@ -98,8 +108,27 @@
       <div id="output" class="output" aria-live="off"></div>
 
       <p class="legend" id="legend">
-        <del>Överstruket</del> är borttaget, <ins>markerat</ins> är tillagt.
+        <del>Överstruket</del> är borttaget, <ins>markerat</ins> är tillagt. Klicka på en ändring för att ångra den.
       </p>
+
+      <section id="changes" class="changes" aria-labelledby="changes-title" hidden>
+        <div class="changes-head">
+          <h3 id="changes-title">Vad ändrades?</h3>
+          <label class="lang">
+            <span>Förklaringar på</span>
+            <select id="lang">
+              <option value="sv">Svenska</option>
+              <option value="sv-enkel">Enkel svenska</option>
+              <option value="en" lang="en">English</option>
+              <option value="ar" lang="ar">العربية</option>
+              <option value="ckb" lang="ckb">کوردی (سۆرانی)</option>
+              <option value="kmr" lang="kmr">Kurdî (Kurmancî)</option>
+            </select>
+          </label>
+        </div>
+        <ol id="change-list" class="change-list"></ol>
+        <p id="changes-note" class="changes-note" hidden></p>
+      </section>
     </section>
 
     <p id="status" class="visually-hidden" role="status" aria-live="polite"></p>
@@ -108,17 +137,34 @@
       <h2 id="about-title">Vad rättas?</h2>
       <ul>
         <li><strong>Stavfel</strong> – till exempel <em>egentligen</em> i stället för <em>egentlien</em>.</li>
-        <li><strong>Särskrivningar</strong> – <em>sjuksköterska</em>, inte <em>sjuk sköterska</em>.</li>
-        <li><strong>Grammatik</strong> – som <em>de</em> och <em>dem</em>, böjningar och ordföljd.</li>
-        <li><strong>Stor bokstav</strong> – i början av meningar och i namn.</li>
+        <li><strong><a href="/guider/sarskrivning">Särskrivningar</a></strong> – <em>sjuksköterska</em>, inte <em>sjuk sköterska</em>.</li>
+        <li><strong>Grammatik</strong> – som <a href="/guider/de-eller-dem"><em>de</em> och <em>dem</em></a>, <a href="/guider/sin-eller-hans"><em>sin</em> och <em>hans</em></a>, böjningar och ordföljd.</li>
+        <li><strong><a href="/guider/komma">Kommatering</a></strong> och <strong><a href="/guider/stor-eller-liten-bokstav">stor bokstav</a></strong>.</li>
       </ul>
-      <p>Din stil och det du vill säga behålls. Texten skickas krypterat för att rättas och sparas inte av Mamosta. Vi använder inga cookies.</p>
+      <p>Varje ändring förklaras kort, och du kan ångra de ändringar du inte vill ha. Vill du hellre skriva om texten? Välj <em>Formellare</em>, <em>Enklare</em> eller <em>Kortare</em>.</p>
+
+      <h2>Lär du dig svenska?</h2>
+      <p>Få förklaringarna på enkel svenska, engelska, arabiska eller kurdiska. Då lär du dig av dina misstag – inte bara rättar dem.</p>
+
+      <h2>Vanliga frågor om svenska</h2>
+      <ul class="guide-links">
+        <li><a href="/guider/de-eller-dem">De eller dem?</a></li>
+        <li><a href="/guider/sarskrivning">Särskrivning</a></li>
+        <li><a href="/guider/komma">När ska man sätta komma?</a></li>
+        <li><a href="/guider/och-eller-att">Och eller att?</a></li>
+        <li><a href="/guider/var-eller-vart">Var eller vart?</a></li>
+        <li><a href="/guider/sin-eller-hans">Sin eller hans?</a></li>
+        <li><a href="/guider/stor-eller-liten-bokstav">Stor eller liten bokstav?</a></li>
+        <li><a href="/guider/ihop-eller-isar">I dag eller idag?</a></li>
+      </ul>
+
+      <p>Texten skickas krypterat för att rättas och sparas inte av Mamosta. Vi använder inga cookies.</p>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="wrap">
-      <p>© Mamosta · <a href="/integritet">Integritet</a> · Inga cookies</p>
+      <p>© Mamosta · <a href="/guider">Guider</a> · <a href="/integritet">Integritet</a> · Inga cookies</p>
     </div>
   </footer>
 </body>

@@ -3,15 +3,29 @@
 
   const MAX = 5000;
   const TIMEOUT_MS = 60_000;
+  const EXPLAIN_TIMEOUT_MS = 40_000;
   // Markör som API:t lägger till om strömningen avbryts
   const STREAM_ERROR = "[Fel vid strömning]";
-  // Över så här många ändringar visas bara den korrigerade texten
+  // Över så här många ändringar visas bara den färdiga texten
   const MAX_EDITS = 2000;
+  // Så många ändringar förklaras (samma gräns som i API:t)
+  const MAX_EXPLAIN = 40;
+  const CONTEXT_CHARS = 50;
+  const LANG_KEY = "mamosta-lang";
+
+  const MODE_HINTS = {
+    ratta: "Rättar stavning, grammatik och särskrivningar. Din stil behålls.",
+    formell: "Rättar fel och gör texten mer formell och professionell.",
+    enkel: "Rättar fel och skriver om med korta meningar och vanliga ord.",
+    kortare: "Rättar fel och kortar ner texten till det viktigaste.",
+  };
+  const RTL = new Set(["ar", "ckb"]);
 
   const $ = (id) => document.getElementById(id);
   const form = $("form");
   const input = $("text");
   const counter = $("counter");
+  const modeHint = $("mode-hint");
   const submitBtn = $("submit");
   const submitLabel = submitBtn.querySelector(".label");
   const clearBtn = $("clear");
@@ -23,16 +37,34 @@
   const legend = $("legend");
   const copyBtn = $("copy");
   const statusEl = $("status");
+  const changesSection = $("changes");
+  const changeList = $("change-list");
+  const changesNote = $("changes-note");
+  const langSelect = $("lang");
   const viewBtns = document.querySelectorAll("[data-view]");
+  const modeInputs = form.querySelectorAll('input[name="mode"]');
 
   const nf = new Intl.NumberFormat("sv-SE");
 
   let controller = null;
+  let explainController = null;
   let loading = false;
   let original = "";
   let corrected = "";
+  let mode = "ratta";
   let chunks = null; // null = ingen diff tillgänglig
+  let listed = []; // index i chunks för ändringar som visas i "Vad ändrades?"
+  let reasonsByLang = {};
   let view = "diff";
+
+  // ---------- Inställningar som bara sparas i webbläsaren ----------
+
+  try {
+    const saved = localStorage.getItem(LANG_KEY);
+    if (saved && langSelect.querySelector(`option[value="${saved}"]`)) langSelect.value = saved;
+  } catch {}
+
+  const selectedMode = () => form.querySelector('input[name="mode"]:checked').value;
 
   // ---------- Teckenräknare ----------
 
@@ -70,7 +102,7 @@
 
   function friendlyError(status, serverMessage) {
     if (status === 400) return serverMessage || "Kontrollera texten och försök igen.";
-    if (status === 429) return "Många använder tjänsten just nu. Vänta en stund och försök igen.";
+    if (status === 429) return serverMessage || "Många använder tjänsten just nu. Vänta en stund och försök igen.";
     if (status === 504) return "Det tog för lång tid att rätta texten. Försök igen.";
     return "Något gick fel hos oss. Försök igen om en stund.";
   }
@@ -107,16 +139,21 @@
     }
 
     hideError();
+    if (explainController) explainController.abort();
     controller = new AbortController();
     const ac = controller;
     const timer = setTimeout(() => ac.abort("timeout"), TIMEOUT_MS);
 
     original = text;
     corrected = "";
+    mode = selectedMode();
     chunks = null;
+    listed = [];
+    reasonsByLang = {};
     output.textContent = "";
     summary.textContent = "Korrigerar…";
     legend.hidden = true;
+    changesSection.hidden = true;
     result.hidden = false;
     setLoading(true);
     statusEl.textContent = "Korrigerar texten…";
@@ -128,7 +165,7 @@
       const res = await fetch("/api/correct", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ text, mode }),
         signal: ac.signal,
       });
 
@@ -182,53 +219,302 @@
 
   // ---------- Resultat ----------
 
+  const isChange = (c) => c.eq === undefined;
+  const finalText = () =>
+    chunks ? chunks.map((c) => (isChange(c) ? (c.rejected ? c.del : c.ins) : c.eq)).join("") : corrected;
+
   function showResult() {
     chunks = diffWords(original, corrected);
-    const changes = chunks ? chunks.filter((c) => c.del || c.ins).length : null;
+    const total = chunks ? chunks.filter(isChange).length : null;
 
-    let text;
-    if (changes === 0) text = "Inga fel hittades – texten ser bra ut.";
-    else if (changes === null) text = "Texten har skrivits om mycket.";
-    else text = changes === 1 ? "1 ändring" : `${nf.format(changes)} ändringar`;
+    // Rättningsläget visar ändringarna; omskrivningarna visar texten direkt
+    const rewrite = mode !== "ratta";
+    const initialView = rewrite || !chunks || total === 0 ? "plain" : view;
 
-    summary.textContent = text;
-    setView(chunks && changes > 0 ? view : "plain", { remember: false });
-    statusEl.textContent = `Klart. ${text}`;
+    updateSummary();
+    setView(initialView, { remember: false });
+
+    if (!rewrite && total > 0) {
+      listed = chunks
+        .map((c, i) => (isChange(c) && (c.del.trim() || c.ins.trim()) ? i : -1))
+        .filter((i) => i >= 0);
+      renderChangeList();
+      if (listed.length) loadReasons();
+    }
+
+    statusEl.textContent = `Klart. ${summary.textContent}`;
     resultTitle.focus();
+  }
+
+  function updateSummary() {
+    if (!chunks) {
+      summary.textContent = mode === "ratta" ? "Texten har skrivits om mycket." : "Texten är omskriven.";
+      return;
+    }
+    const changes = chunks.filter(isChange);
+    const undone = changes.filter((c) => c.rejected).length;
+    if (changes.length === 0) {
+      summary.textContent =
+        mode === "ratta" ? "Inga fel hittades – texten ser bra ut." : "Texten behövde inga ändringar.";
+      return;
+    }
+    let text = changes.length === 1 ? "1 ändring" : `${nf.format(changes.length)} ändringar`;
+    if (undone) text += ` · ${nf.format(undone)} ångrad${undone === 1 ? "" : "e"}`;
+    summary.textContent = text;
   }
 
   function setView(next, { remember = true } = {}) {
     if (remember) view = next;
     const showDiff = next === "diff" && chunks !== null;
-    viewBtns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.view === (showDiff ? "diff" : "plain"))));
-    legend.hidden = !showDiff || !chunks.some((c) => c.del || c.ins);
+    viewBtns.forEach((b) =>
+      b.setAttribute("aria-pressed", String(b.dataset.view === (showDiff ? "diff" : "plain")))
+    );
+    legend.hidden = !showDiff || !chunks.some(isChange);
     render(showDiff);
+  }
+
+  function currentView() {
+    const pressed = document.querySelector('[data-view][aria-pressed="true"]');
+    return pressed ? pressed.dataset.view : "plain";
   }
 
   function render(showDiff) {
     output.textContent = "";
     if (!showDiff) {
-      output.textContent = corrected;
+      output.textContent = finalText();
       return;
     }
     const frag = document.createDocumentFragment();
-    for (const c of chunks) {
-      if (c.eq !== undefined) {
+    chunks.forEach((c, i) => {
+      if (!isChange(c)) {
         frag.append(c.eq);
-        continue;
+        return;
       }
-      if (c.del) {
-        const el = document.createElement("del");
-        el.textContent = c.del;
-        frag.append(el);
+      const span = document.createElement("span");
+      span.className = "chg";
+      span.dataset.i = String(i);
+      if (c.rejected) {
+        span.classList.add("rejected");
+        span.textContent = c.del;
+        span.title = "Ångrad – klicka för att använda rättningen igen";
+      } else {
+        span.title = "Klicka för att ångra ändringen";
+        if (c.del) {
+          const el = document.createElement("del");
+          el.textContent = c.del;
+          span.append(el);
+        }
+        if (c.ins) {
+          const el = document.createElement("ins");
+          el.textContent = c.ins;
+          span.append(el);
+        }
       }
-      if (c.ins) {
-        const el = document.createElement("ins");
-        el.textContent = c.ins;
-        frag.append(el);
-      }
-    }
+      frag.append(span);
+    });
     output.append(frag);
+  }
+
+  // Ångra eller återställ en enskild ändring
+  function toggleChange(i) {
+    const c = chunks && chunks[i];
+    if (!c || !isChange(c)) return;
+    c.rejected = !c.rejected;
+    updateSummary();
+    render(currentView() === "diff");
+    const li = changeList.querySelector(`[data-i="${i}"]`);
+    if (li) updateListItem(li, c);
+    statusEl.textContent = c.rejected
+      ? `Ändringen är ångrad. ${summary.textContent}`
+      : `Ändringen används igen. ${summary.textContent}`;
+  }
+
+  // ---------- Vad ändrades? ----------
+
+  const shown = (s) => (s.trim() ? s.trim() : s.includes("\n") ? "(radbrytning)" : "(mellanslag)");
+
+  function renderChangeList() {
+    changeList.textContent = "";
+    changesSection.hidden = listed.length === 0;
+    if (!listed.length) return;
+
+    const items = listed.slice(0, MAX_EXPLAIN);
+    for (const i of items) {
+      const c = chunks[i];
+      const li = document.createElement("li");
+      li.dataset.i = String(i);
+
+      const pair = document.createElement("p");
+      pair.className = "pair";
+      if (c.del && c.ins) {
+        const d = document.createElement("del");
+        d.textContent = shown(c.del);
+        const n = document.createElement("ins");
+        n.textContent = shown(c.ins);
+        pair.append(d, " → ", n);
+      } else if (c.ins) {
+        const n = document.createElement("ins");
+        n.textContent = shown(c.ins);
+        pair.append("Lagt till ", n);
+      } else {
+        const d = document.createElement("del");
+        d.textContent = shown(c.del);
+        pair.append("Tagit bort ", d);
+      }
+
+      const reason = document.createElement("p");
+      reason.className = "reason";
+
+      const actions = document.createElement("p");
+      actions.className = "item-actions";
+      const undo = document.createElement("button");
+      undo.type = "button";
+      undo.className = "link-btn";
+      undo.addEventListener("click", () => toggleChange(i));
+      actions.append(undo);
+
+      const guide = guideFor(c.del, c.ins);
+      if (guide) {
+        const a = document.createElement("a");
+        a.href = `/guider/${guide.slug}`;
+        a.textContent = `Läs mer: ${guide.name}`;
+        actions.append(a);
+      }
+
+      li.append(pair, reason, actions);
+      updateListItem(li, c);
+      changeList.append(li);
+    }
+
+    setRestNote();
+    showReasons();
+  }
+
+  function setRestNote() {
+    const rest = listed.length - MAX_EXPLAIN;
+    changesNote.hidden = rest <= 0;
+    changesNote.textContent =
+      rest > 0 ? `Ytterligare ${nf.format(rest)} ändringar syns i texten ovan men förklaras inte.` : "";
+  }
+
+  function updateListItem(li, c) {
+    li.classList.toggle("rejected", Boolean(c.rejected));
+    const btn = li.querySelector(".link-btn");
+    const label = c.del && c.ins ? `${shown(c.del)} till ${shown(c.ins)}` : shown(c.del || c.ins);
+    btn.textContent = c.rejected ? "Använd rättningen" : "Ångra";
+    btn.setAttribute("aria-label", `${c.rejected ? "Använd rättningen" : "Ångra ändringen"} ${label}`);
+  }
+
+  function showReasons(state) {
+    const lang = langSelect.value;
+    const reasons = reasonsByLang[lang];
+    changeList.setAttribute("aria-busy", String(state === "loading"));
+    changeList.querySelectorAll("li").forEach((li, n) => {
+      const p = li.querySelector(".reason");
+      p.classList.remove("muted");
+      p.removeAttribute("dir");
+      p.lang = "sv";
+      if (reasons && reasons[n]) {
+        p.textContent = reasons[n];
+        p.lang = lang === "sv-enkel" ? "sv" : lang;
+        if (RTL.has(lang)) p.dir = "rtl";
+      } else if (state === "loading") {
+        p.textContent = "Hämtar förklaring…";
+        p.classList.add("muted");
+      } else {
+        p.textContent = "";
+      }
+    });
+    if (state === "error") {
+      changesNote.hidden = false;
+      changesNote.textContent = "Förklaringarna kunde inte hämtas just nu. Rättningarna fungerar ändå.";
+    }
+  }
+
+  function contextFor(i) {
+    const before = (chunks[i - 1] && chunks[i - 1].eq) || "";
+    const after = (chunks[i + 1] && chunks[i + 1].eq) || "";
+    const c = chunks[i];
+    const tidy = (s) => s.replace(/\s+/g, " ");
+    return tidy(
+      `…${before.slice(-CONTEXT_CHARS)}[${c.del} → ${c.ins}]${after.slice(0, CONTEXT_CHARS)}…`
+    ).slice(0, 380);
+  }
+
+  async function loadReasons() {
+    const lang = langSelect.value;
+    if (reasonsByLang[lang]) {
+      showReasons();
+      return;
+    }
+    if (explainController) explainController.abort();
+    const ac = new AbortController();
+    explainController = ac;
+    const timer = setTimeout(() => ac.abort("timeout"), EXPLAIN_TIMEOUT_MS);
+    const items = listed.slice(0, MAX_EXPLAIN);
+
+    showReasons("loading");
+    try {
+      const res = await fetch("/api/correct", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          lang,
+          changes: items.map((i) => ({
+            from: chunks[i].del.slice(0, 380),
+            to: chunks[i].ins.slice(0, 380),
+            context: contextFor(i),
+          })),
+        }),
+        signal: ac.signal,
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      const data = await res.json();
+      if (explainController !== ac) return;
+      reasonsByLang[lang] = Array.isArray(data.reasons) ? data.reasons : [];
+      if (langSelect.value === lang) showReasons();
+    } catch {
+      if (explainController === ac && !(ac.signal.aborted && ac.signal.reason !== "timeout")) {
+        showReasons("error");
+      }
+    } finally {
+      clearTimeout(timer);
+      if (explainController === ac) explainController = null;
+    }
+  }
+
+  // Länk till en guide som passar ändringen
+  const GUIDES = {
+    "de-eller-dem": "De eller dem?",
+    "var-eller-vart": "Var eller vart?",
+    "och-eller-att": "Och eller att?",
+    "sin-eller-hans": "Sin eller hans?",
+    komma: "När ska man sätta komma?",
+    "ihop-eller-isar": "Ihop eller isär?",
+    sarskrivning: "Särskrivning",
+    "stor-eller-liten-bokstav": "Stor eller liten bokstav?",
+  };
+
+  function guideFor(from, to) {
+    const f = from.trim();
+    const t = to.trim();
+    const lf = f.toLowerCase();
+    const lt = t.toLowerCase();
+    const both = (set) => set.includes(lf) && set.includes(lt);
+    let slug = null;
+
+    if (both(["de", "dem", "dom"])) slug = "de-eller-dem";
+    else if (both(["var", "vart", "blev"])) slug = "var-eller-vart";
+    else if (both(["och", "att", "å"])) slug = "och-eller-att";
+    else if (both(["sin", "sitt", "sina", "hans", "hennes", "deras"])) slug = "sin-eller-hans";
+    else if (/,/.test(f + t) && lf.replace(/,/g, "") === lt.replace(/,/g, "")) slug = "komma";
+    else if (f !== t && lf.replace(/[\s-]/g, "") === lt.replace(/[\s-]/g, "") && /\s/.test(f + t)) {
+      slug = /^i ?(dag|går|morgon|kväll|stället|alla ?fall)$/.test(lf) || /^i ?(dag|går|morgon|kväll|stället|alla ?fall)$/.test(lt)
+        ? "ihop-eller-isar"
+        : "sarskrivning";
+    } else if (f !== t && lf === lt) slug = "stor-eller-liten-bokstav";
+
+    return slug ? { slug, name: GUIDES[slug] } : null;
   }
 
   // ---------- Ord-diff (Myers) ----------
@@ -351,22 +637,23 @@
   // ---------- Kopiera ----------
 
   async function copy() {
+    const text = finalText();
     let ok = false;
     try {
       // Vissa webbläsare låter anropet hänga – ge upp efter en stund
       await Promise.race([
-        navigator.clipboard.writeText(corrected),
+        navigator.clipboard.writeText(text),
         new Promise((_, reject) => setTimeout(reject, 1500)),
       ]);
       ok = true;
     } catch {
-      ok = legacyCopy(corrected);
+      ok = legacyCopy(text);
     }
 
     const message = ok ? "Kopierat!" : "Kunde inte kopiera";
     copyBtn.textContent = message;
     statusEl.textContent = ok
-      ? "Den korrigerade texten är kopierad."
+      ? "Den färdiga texten är kopierad."
       : "Kunde inte kopiera. Markera texten och kopiera den själv.";
     clearTimeout(copy.timer);
     copy.timer = setTimeout(() => (copyBtn.textContent = "Kopiera"), 2500);
@@ -393,12 +680,16 @@
 
   function clearAll() {
     if (controller) controller.abort();
+    if (explainController) explainController.abort();
     controller = null;
     setLoading(false);
     input.value = "";
     original = corrected = "";
     chunks = null;
+    listed = [];
+    reasonsByLang = {};
     output.textContent = "";
+    changeList.textContent = "";
     result.hidden = true;
     hideError();
     updateCounter();
@@ -419,9 +710,24 @@
     e.preventDefault();
     correct();
   });
+  modeInputs.forEach((r) =>
+    r.addEventListener("change", () => (modeHint.textContent = MODE_HINTS[selectedMode()]))
+  );
   clearBtn.addEventListener("click", clearAll);
   copyBtn.addEventListener("click", copy);
   viewBtns.forEach((b) => b.addEventListener("click", () => setView(b.dataset.view)));
+  output.addEventListener("click", (e) => {
+    const span = e.target.closest(".chg");
+    if (span && !loading) toggleChange(Number(span.dataset.i));
+  });
+  langSelect.addEventListener("change", () => {
+    try {
+      localStorage.setItem(LANG_KEY, langSelect.value);
+    } catch {}
+    setRestNote();
+    if (listed.length) loadReasons();
+  });
 
+  modeHint.textContent = MODE_HINTS[selectedMode()];
   updateCounter();
 })();
