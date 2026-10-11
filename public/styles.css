@@ -58,6 +58,9 @@
   }
 }
 
+/* Mjuk övergång mellan sidor (Chrome/Edge/Safari) */
+@view-transition { navigation: auto; }
+
 /* Grund */
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -346,43 +349,6 @@ del + ins { margin-left: 2px; }
 .site-footer a { color: var(--muted); }
 .site-footer a:hover { color: var(--text); }
 
-/* Lägen */
-.modes {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-2);
-  margin: 0 0 var(--space-2);
-  padding: 0;
-  border: 0;
-}
-.modes label { position: relative; }
-.modes input {
-  position: absolute;
-  opacity: 0;
-  width: 1px; height: 1px;
-}
-.modes span {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 2.25rem;
-  padding: 0 var(--space-4);
-  font-size: var(--text-sm);
-  font-weight: 500;
-  color: var(--muted);
-  border: 1px solid var(--border-strong);
-  border-radius: 999px;
-  cursor: pointer;
-}
-.modes span:hover { color: var(--text); background: var(--accent-soft); }
-.modes input:checked + span {
-  color: var(--on-accent);
-  background: var(--accent);
-  border-color: var(--accent);
-}
-.modes input:focus-visible + span { outline: 2px solid var(--focus); outline-offset: 2px; }
-.mode-hint { margin-bottom: var(--space-3); font-size: var(--text-sm); color: var(--muted); }
-
 /* Klickbara ändringar i texten */
 .chg { cursor: pointer; border-radius: 3px; }
 .chg:hover { outline: 1px solid var(--border-strong); outline-offset: 1px; }
@@ -522,11 +488,11 @@ select {
   .wrap { padding: 0 var(--space-5); }
   .intro { padding: var(--space-8) 0 var(--space-6); }
   .hint { display: inline; }
-  .modes { display: flex; flex-wrap: wrap; }
   .btn-primary { flex: 0 0 auto; min-width: 10rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
   *, *::before, *::after { animation-duration: 0.01ms !important; transition: none !important; }
   .spinner { animation: none; border-right-color: currentColor; opacity: 0.5; }
 }

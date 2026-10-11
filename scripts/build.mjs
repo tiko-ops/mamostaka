@@ -1,14 +1,28 @@
-// Bygger språkguiderna: content/guider/*.html → public/guider/*.html, samt public/sitemap.xml.
-// Kör efter att du ändrat en guide:  node scripts/build-guides.mjs
-// Resultatet checkas in, så sajten behöver inget byggsteg.
+// Bygger de statiska sidorna:
+//  - content/guider/*.html → public/guider/*.html (+ hubbsida) och public/sitemap.xml
+//  - versionsnummer på styles.css och app.js i alla HTML-filer (?v=hash), så att de
+//    kan cachas länge i webbläsaren men ändå uppdateras direkt vid nästa deploy.
+// Körs automatiskt av "npm run build" (även på Vercel). Manuellt: node scripts/build.mjs
 
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const SITE = "https://www.mamosta.se";
 const today = new Date().toISOString().slice(0, 10);
+
+const hash = (file) =>
+  createHash("sha256").update(readFileSync(join(root, "public", file))).digest("hex").slice(0, 10);
+const CSS = `/styles.css?v=${hash("styles.css")}`;
+const JS = `/app.js?v=${hash("app.js")}`;
+
+// Förhandsladdar en intern sida när man håller musen över länken (Chrome/Edge),
+// så att sidbyten känns direkta. Andra webbläsare ignorerar detta.
+const SPECULATION = `<script type="speculationrules">
+  {"prerender": [{"where": {"and": [{"href_matches": "/*"}, {"not": {"href_matches": "/api/*"}}]}, "eagerness": "moderate"}]}
+  </script>`;
 
 // Ordningen styr hubbsidan och "Fler guider"
 const ORDER = [
@@ -56,7 +70,8 @@ function page({ title, description, path, ogType = "article", jsonLd, main }) {
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="${CSS}">
+  ${SPECULATION}
   <script type="application/ld+json">
 ${JSON.stringify(jsonLd, null, 2)}
   </script>
@@ -209,4 +224,16 @@ ${urls.map((u) => `  <url>\n    <loc>${SITE}${u}</loc>\n    <lastmod>${today}</l
 `
 );
 
-console.log(`Byggde ${guides.length} guider, hubbsida och sitemap.xml`);
+// Versionsnummer i de handskrivna sidorna
+for (const file of ["index.html", "integritet.html"]) {
+  const path = join(root, "public", file);
+  const html = readFileSync(path, "utf8")
+    .replace(/href="\/styles\.css(\?v=\w+)?"/g, `href="${CSS}"`)
+    .replace(/src="\/app\.js(\?v=\w+)?"/g, `src="${JS}"`);
+  writeFileSync(path, html);
+}
+
+// Samma versionsnummer till 404-sidan (pages/404.tsx)
+writeFileSync(join(root, "lib/assets.json"), JSON.stringify({ css: CSS, js: JS }, null, 2) + "\n");
+
+console.log(`Byggde ${guides.length} guider, hubbsida och sitemap.xml (${CSS}, ${JS})`);
