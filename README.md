@@ -1,6 +1,6 @@
 # Mamosta
 
-Enkel svensk texträttning på [www.mamosta.se](https://www.mamosta.se). Klistra in en text, tryck **Korrigera** och se rättningen med markerade ändringar.
+Enkel svensk texträttning på [www.mamosta.se](https://www.mamosta.se). Klistra in en text, tryck **Korrigera** och se rättningen med markerade ändringar och förklaringar. Texten kan också göras formellare, enklare eller kortare, och det finns språkguider om vanliga fel.
 
 ## Struktur
 
@@ -9,10 +9,13 @@ public/               Gränssnittet – statisk HTML, CSS och vanilla JS (inget 
   index.html          Startsidan
   integritet.html     Integritetssidan
   styles.css          All CSS, designtokens som CSS-variabler (ljust + mörkt läge)
-  app.js              Teckenräknare, anrop, ord-diff, kopiera, felhantering
+  app.js              Lägen, anrop, ord-diff, ångra, förklaringar, kopiera, felhantering
+  guider/             Genererade guidesidor (redigera inte här – se nedan)
   robots.txt, sitemap.xml, favicon.svg, apple-touch-icon.png, og-image.png
+content/guider/       Texterna till guiderna (HTML + metadata överst)
+scripts/build-guides.mjs  Bygger public/guider/ och sitemap.xml från content/guider/
 app/api/correct/      API:t (Next.js route handler) – det enda som körs på servern
-next.config.mjs       Pekar / → /index.html och /integritet → /integritet.html
+next.config.mjs       Pekar /, /integritet och /guider/... till de statiska filerna
 archive/              Den gamla React-versionen av sidorna (används inte)
 ```
 
@@ -20,16 +23,32 @@ Next.js används bara för API-routen. Sidorna är vanliga statiska filer.
 
 ## API
 
-`POST /api/correct`
+`POST /api/correct` har två lägen.
+
+**Rätta eller skriva om** – svaret strömmas som `text/plain`:
 
 ```json
-{ "text": "Din text, max 5000 tecken" }
+{ "text": "Din text, max 5000 tecken", "mode": "ratta" }
 ```
 
-- **200** – den korrigerade texten strömmas som `text/plain`. Om strömningen avbryts avslutas svaret med `[Fel vid strömning]`.
-- **400 / 429 / 500 / 504** – `{ "error": "Vänligt felmeddelande på svenska" }`
+`mode` är valfritt: `ratta` (standard), `formell`, `enkel` eller `kortare`. Om strömningen avbryts slutar svaret med `[Fel vid strömning]`.
 
-API:t returnerar bara den korrigerade texten. Ändringarna (överstruket/markerat) räknas fram i webbläsaren med en ord-diff i `public/app.js`.
+**Förklara ändringar** – svaret är JSON `{ "reasons": ["...", ...] }`, en per ändring:
+
+```json
+{
+  "lang": "sv",
+  "changes": [{ "from": "dem", "to": "de", "context": "…sa att [dem → de] inte fick…" }]
+}
+```
+
+`lang`: `sv`, `sv-enkel`, `en`, `ar`, `ckb` (sorani) eller `kmr` (kurmanji). Max 40 ändringar, max 400 tecken per fält.
+
+Fel ger **400 / 429 / 500 / 504** med `{ "error": "Vänligt felmeddelande på svenska" }`.
+
+Ändringarna (överstruket/markerat) räknas fram i webbläsaren med en ord-diff i `public/app.js`, och bara de ändrade orden plus lite sammanhang skickas för att förklaras.
+
+**Begränsning:** 20 rättningar och 40 förklaringsanrop per IP-adress och 10 minuter. Räknaren ligger i serverns minne (per instans), så den är ett skydd mot enkla bottar – inte en garanti. Se *Skydd mot höga kostnader* nedan.
 
 Användarens text loggas eller sparas aldrig. Bara felstatus loggas.
 
@@ -53,6 +72,23 @@ npm run dev
 ```
 
 Öppna http://localhost:3000.
+
+## Guider
+
+Guiderna på `/guider` är statiska sidor. Ändra eller lägg till texter i `content/guider/` (ny guide: lägg också till dess namn i `ORDER` i skriptet) och kör:
+
+```bash
+node scripts/build-guides.mjs
+```
+
+Skriptet skriver `public/guider/*.html`, hubbsidan `/guider` och en ny `public/sitemap.xml`. Checka in resultatet.
+
+## Skydd mot höga kostnader
+
+Räknaren i API:t räcker långt men är inte vattentät. Gör gärna även detta:
+
+1. **OpenAI → Settings → Limits:** sätt en månadsbudget (till exempel 10–20 USD) och e-postvarning.
+2. **Vercel → Project → Firewall → Rules:** lägg till en *Rate limit*-regel för sökvägen `/api/correct` om din plan har det.
 
 ## Driftsättning
 
