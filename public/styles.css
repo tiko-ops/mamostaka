@@ -121,8 +121,8 @@ p { margin: 0; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: var(--space-5);
-  padding-bottom: var(--space-5);
+  padding-top: var(--space-3);
+  padding-bottom: var(--space-3);
 }
 .logo {
   display: inline-flex;
@@ -147,7 +147,7 @@ p { margin: 0; }
 .site-header nav a:hover { color: var(--text); text-decoration: underline; }
 
 /* Intro */
-.intro { padding: var(--space-6) 0 var(--space-5); }
+.intro { padding: var(--space-4) 0 var(--space-5); }
 .intro h1 { font-size: var(--text-xl); }
 .lead {
   margin-top: var(--space-3);
@@ -160,7 +160,8 @@ p { margin: 0; }
 textarea {
   display: block;
   width: 100%;
-  min-height: 14rem;
+  height: 11rem;
+  min-height: 8rem;
   padding: var(--space-4);
   font: inherit;
   font-size: var(--text-lg);
@@ -338,7 +339,7 @@ del + ins { margin-left: 2px; }
 .about strong { color: var(--text); font-weight: 600; }
 
 /* Textsidor */
-.prose { padding-top: var(--space-6); padding-bottom: var(--space-7); }
+.prose { padding-top: var(--space-4); padding-bottom: var(--space-7); }
 .prose h1 { font-size: var(--text-xl); margin-bottom: var(--space-5); }
 .prose h2 { font-size: var(--text-lg); margin: var(--space-6) 0 var(--space-2); }
 .prose p, .prose li { color: var(--muted); }
@@ -498,9 +499,16 @@ select {
 /* Större skärmar */
 @media (min-width: 40rem) {
   .wrap { padding: 0 var(--space-5); }
-  .intro { padding: var(--space-8) 0 var(--space-6); }
+  .intro { padding: var(--space-6) 0 var(--space-6); }
   .hint { display: inline; }
+  textarea { height: 15rem; }
+  .prose { padding-top: var(--space-6); }
   .btn-primary { flex: 0 0 auto; min-width: 10rem; }
+}
+
+/* Låga skärmar (små mobiler): kortare textfält så att Korrigera syns direkt */
+@media (max-height: 620px) and (max-width: 39.99rem) {
+  textarea { height: 8rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
