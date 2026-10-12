@@ -47,7 +47,7 @@
   let chunks = null; // null = ingen diff tillgänglig
   let listed = []; // index i chunks för ändringar som visas i "Vad ändrades?"
   let reasonsByLang = {};
-  let view = "diff";
+  let view = "plain"; // korrigerad text visas först, ändringarna en klick bort
 
   // ---------- Inställningar som bara sparas i webbläsaren ----------
 
