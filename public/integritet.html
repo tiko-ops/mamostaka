@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Integritet – Mamosta</title>
-  <meta name="description" content="Så hanterar Mamosta din text: den sparas inte, vi använder inga cookies och ingen spårning.">
+  <meta name="description" content="Så hanterar Mamosta din text: den sparas inte, vi använder inga cookies och räknar bara besök anonymt.">
   <link rel="canonical" href="https://www.mamosta.se/integritet">
   <meta name="color-scheme" content="light dark">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="sv_SE">
   <meta property="og:site_name" content="Mamosta">
   <meta property="og:title" content="Integritet – Mamosta">
-  <meta property="og:description" content="Din text sparas inte. Inga cookies, ingen spårning.">
+  <meta property="og:description" content="Din text sparas inte. Inga cookies – bara anonym besöksstatistik.">
   <meta property="og:url" content="https://www.mamosta.se/integritet">
   <meta property="og:image" content="https://www.mamosta.se/og-image.png">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -19,6 +19,21 @@
   <link rel="stylesheet" href="/styles.css?v=3c45b01164">
   <script type="speculationrules">
   {"prerender": [{"where": {"and": [{"href_matches": "/*"}, {"not": {"href_matches": "/api/*"}}]}, "eagerness": "moderate"}]}
+  </script>
+  <!-- Vercel Web Analytics: anonym besöksstatistik utan cookies. Laddas inte för sidor som
+       bara förhandsladdas (speculation rules), så att de inte räknas som besök. -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    (function () {
+      function load() {
+        var s = document.createElement("script");
+        s.defer = true;
+        s.src = "/_vercel/insights/script.js";
+        document.head.appendChild(s);
+      }
+      if (document.prerendering) document.addEventListener("prerenderingchange", load, { once: true });
+      else load();
+    })();
   </script>
 </head>
 <body>
@@ -47,8 +62,9 @@
       <li>När du ber om förklaringar skickas bara de ändrade orden och några ord runt dem.</li>
     </ul>
 
-    <h2>Cookies och spårning</h2>
-    <p>Vi använder inga cookies, ingen analys och inga spårningsskript. Vi behöver inget konto eller några personuppgifter från dig.</p>
+    <h2>Cookies och statistik</h2>
+    <p>Vi använder inga cookies och behöver inget konto eller några personuppgifter från dig.</p>
+    <p>För att veta hur många som använder Mamosta använder vi <strong>Vercel Web Analytics</strong>. Det räknar besök anonymt, utan cookies och utan att spara din IP-adress. Vi ser bara sammanställd statistik, till exempel antal besök, vilka sidor som läses, från vilket land och med vilken typ av enhet. Vi kan också räkna hur verktyget används, till exempel att en text rättats eller att ett förklaringsspråk valts – men aldrig vad texten innehåller.</p>
     <p>För att stoppa missbruk räknar servern hur många rättningar som görs från varje IP-adress under tio minuter. IP-adressen finns bara tillfälligt i serverns minne och sparas eller loggas inte.</p>
     <p>Om du väljer ett språk för förklaringarna kommer webbläsaren ihåg ditt val (i <em>localStorage</em>). Det stannar på din enhet och skickas aldrig till oss.</p>
 

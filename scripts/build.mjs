@@ -18,6 +18,22 @@ const hash = (file) =>
 const CSS = `/styles.css?v=${hash("styles.css")}`;
 const JS = `/app.js?v=${hash("app.js")}`;
 
+// Vercel Web Analytics (anonymt, utan cookies). Laddas först när sidan faktiskt visas,
+// så att förhandsladdade sidor inte räknas som besök.
+const ANALYTICS = `<script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    (function () {
+      function load() {
+        var s = document.createElement("script");
+        s.defer = true;
+        s.src = "/_vercel/insights/script.js";
+        document.head.appendChild(s);
+      }
+      if (document.prerendering) document.addEventListener("prerenderingchange", load, { once: true });
+      else load();
+    })();
+  </script>`;
+
 // Förhandsladdar en intern sida när man håller musen över länken (Chrome/Edge),
 // så att sidbyten känns direkta. Andra webbläsare ignorerar detta.
 const SPECULATION = `<script type="speculationrules">
@@ -72,6 +88,7 @@ function page({ title, description, path, ogType = "article", jsonLd, main }) {
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="stylesheet" href="${CSS}">
   ${SPECULATION}
+  ${ANALYTICS}
   <script type="application/ld+json">
 ${JSON.stringify(jsonLd, null, 2)}
   </script>

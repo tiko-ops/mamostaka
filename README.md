@@ -103,4 +103,21 @@ Projektet ligger på Vercel (ramverk: Next.js). En push till `main` driftsätter
 
 ## Integritet
 
-Inga cookies, ingen analys, inga spårningsskript och inga externa typsnitt. Texten skickas till OpenAI för att rättas och sparas inte av Mamosta.
+Inga cookies och inga externa typsnitt. Texten skickas till OpenAI för att rättas och sparas inte av Mamosta.
+
+## Statistik
+
+Besöksstatistik via **Vercel Web Analytics** – anonymt och utan cookies. Slå på det i Vercel → Project → Analytics → Enable. Skriptet (`/_vercel/insights/script.js`) laddas i alla sidor, men först när sidan faktiskt visas, så att förhandsladdade sidor inte räknas som besök.
+
+`public/app.js` skickar även anonyma händelser med `track()` – aldrig någon text:
+
+| Händelse | Data |
+| --- | --- |
+| Korrigera | `langd`: kort (≤200 tecken) / medel (≤1000) / lång |
+| Resultat | `andringar`: 0 / 1–3 / 4–10 / 11+ / omskriven |
+| Visa ändringar, Kopiera, Ångra ändring, Återställ ändring | – |
+| Förklaringsspråk | `sprak`: sv, sv-enkel, en, ar, ckb, kmr |
+| Guide från förklaring | `guide`: guidens slug |
+| Fel | `typ`: tom text, för lång, 400, 429, 500, 504, timeout, nätverk, offline, ström, förklaring |
+
+Händelser (*custom events*) syns bara i Vercel på Pro-planen. På Hobby räknas besök, sidor, källor, länder och enheter.
