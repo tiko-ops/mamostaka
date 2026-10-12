@@ -23,6 +23,19 @@
   <script type="speculationrules">
   {"prerender": [{"where": {"and": [{"href_matches": "/*"}, {"not": {"href_matches": "/api/*"}}]}, "eagerness": "moderate"}]}
   </script>
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    (function () {
+      function load() {
+        var s = document.createElement("script");
+        s.defer = true;
+        s.src = "/_vercel/insights/script.js";
+        document.head.appendChild(s);
+      }
+      if (document.prerendering) document.addEventListener("prerenderingchange", load, { once: true });
+      else load();
+    })();
+  </script>
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",

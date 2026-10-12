@@ -39,6 +39,17 @@
 
   const nf = new Intl.NumberFormat("sv-SE");
 
+  // Anonym användningsstatistik (Vercel Web Analytics, utan cookies).
+  // Skickar bara händelsens namn och grova kategorier – aldrig någon text.
+  function track(name, data) {
+    try {
+      if (window.va) window.va("event", { name, data });
+    } catch {}
+  }
+  const lengthBucket = (n) => (n <= 200 ? "kort" : n <= 1000 ? "medel" : "lång");
+  const changesBucket = (n) =>
+    n === null ? "omskriven" : n === 0 ? "0" : n <= 3 ? "1–3" : n <= 10 ? "4–10" : "11+";
+
   let controller = null;
   let explainController = null;
   let loading = false;
@@ -97,7 +108,12 @@
     return "Något gick fel hos oss. Försök igen om en stund.";
   }
 
-  class FriendlyError extends Error {}
+  class FriendlyError extends Error {
+    constructor(message, kind = "server") {
+      super(message);
+      this.kind = kind;
+    }
+  }
 
   // ---------- Laddläge ----------
 
@@ -119,16 +135,19 @@
 
     if (!text.trim()) {
       showError("Skriv eller klistra in en text först.", "empty");
+      track("Fel", { typ: "tom text" });
       input.focus();
       return;
     }
     if (text.length > MAX) {
       showError(tooLongMessage(), "length");
+      track("Fel", { typ: "för lång" });
       input.focus();
       return;
     }
 
     hideError();
+    track("Korrigera", { langd: lengthBucket(text.length) });
     if (explainController) explainController.abort();
     controller = new AbortController();
     const ac = controller;
@@ -160,7 +179,7 @@
 
       if (!res.ok) {
         const data = await res.json().catch(() => null);
-        throw new FriendlyError(friendlyError(res.status, data && data.error));
+        throw new FriendlyError(friendlyError(res.status, data && data.error), String(res.status));
       }
       if (!res.body) throw new FriendlyError(friendlyError(500));
 
@@ -175,7 +194,7 @@
       corrected += decoder.decode();
 
       if (corrected.includes(STREAM_ERROR)) {
-        throw new FriendlyError("Rättningen avbröts. Försök igen.");
+        throw new FriendlyError("Rättningen avbröts. Försök igen.", "ström");
       }
       if (!corrected.trim()) throw new FriendlyError(friendlyError(500));
 
@@ -185,15 +204,21 @@
       if (ac.signal.aborted && ac.signal.reason !== "timeout") return;
 
       let message;
+      let kind;
       if (ac.signal.reason === "timeout") {
         message = "Det tog för lång tid att rätta texten. Försök igen.";
+        kind = "timeout";
       } else if (err instanceof FriendlyError) {
         message = err.message;
+        kind = err.kind;
       } else if (!navigator.onLine) {
         message = "Du verkar vara offline. Kontrollera anslutningen och försök igen.";
+        kind = "offline";
       } else {
         message = "Kunde inte nå servern. Försök igen om en stund.";
+        kind = "nätverk";
       }
+      track("Fel", { typ: kind });
       result.hidden = true;
       statusEl.textContent = "";
       showError(message);
@@ -218,6 +243,7 @@
 
     const initialView = !chunks || total === 0 ? "plain" : view;
 
+    track("Resultat", { andringar: changesBucket(total) });
     updateSummary();
     setView(initialView, { remember: false });
 
@@ -250,7 +276,10 @@
   }
 
   function setView(next, { remember = true } = {}) {
-    if (remember) view = next;
+    if (remember) {
+      if (next !== view && next === "diff") track("Visa ändringar");
+      view = next;
+    }
     const showDiff = next === "diff" && chunks !== null;
     viewBtns.forEach((b) =>
       b.setAttribute("aria-pressed", String(b.dataset.view === (showDiff ? "diff" : "plain")))
@@ -306,6 +335,7 @@
     const c = chunks && chunks[i];
     if (!c || !isChange(c)) return;
     c.rejected = !c.rejected;
+    track(c.rejected ? "Ångra ändring" : "Återställ ändring");
     updateSummary();
     render(currentView() === "diff");
     const li = changeList.querySelector(`[data-i="${i}"]`);
@@ -364,6 +394,7 @@
         const a = document.createElement("a");
         a.href = `/guider/${guide.slug}`;
         a.textContent = `Läs mer: ${guide.name}`;
+        a.addEventListener("click", () => track("Guide från förklaring", { guide: guide.slug }));
         actions.append(a);
       }
 
@@ -461,6 +492,7 @@
       if (langSelect.value === lang) showReasons();
     } catch {
       if (explainController === ac && !(ac.signal.aborted && ac.signal.reason !== "timeout")) {
+        track("Fel", { typ: "förklaring" });
         showReasons("error");
       }
     } finally {
@@ -658,6 +690,7 @@
       ok = legacyCopy(text);
     }
 
+    if (ok) track("Kopiera");
     const message = ok ? "Kopierat!" : "Kunde inte kopiera";
     copyBtn.textContent = message;
     statusEl.textContent = ok
@@ -729,6 +762,7 @@
     try {
       localStorage.setItem(LANG_KEY, langSelect.value);
     } catch {}
+    track("Förklaringsspråk", { sprak: langSelect.value });
     setRestNote();
     if (listed.length) loadReasons();
   });
