@@ -84,6 +84,15 @@ node scripts/build.mjs
 
 Skriptet skriver `public/guider/*.html`, hubbsidan `/guider` och en ny `public/sitemap.xml`. Checka in resultatet.
 
+## SEO
+
+- **En adress:** `mamosta.se` omdirigeras permanent till `www.mamosta.se` (next.config.mjs), så att Google bara ser en version av varje sida.
+- **Sökord:** startsidan är optimerad för *stavningskontroll* och *grammatikkontroll*, med en FAQ och strukturerad data (Organization, WebSite, WebApplication, FAQPage).
+- **Guider:** 14 språkguider i `content/guider/` – nya guider läggs till där och i `ORDER` i `scripts/build.mjs`.
+- **Andra språk:** `/en` (Swedish grammar checker) och `/ar` (arabiska) är landningssidor med `hreflang`. Knappen leder till `/?lang=en` resp. `/?lang=ar`, som förväljer förklaringsspråket.
+- **AI-sök:** `public/llms.txt` genereras av `scripts/build.mjs`.
+- **IndexNow:** efter en deploy med nya eller ändrade sidor, kör `node scripts/indexnow.mjs` för att meddela Bing (som även driver ChatGPT-sök och Copilot). Nyckelfilen `public/<nyckel>.txt` ska ligga kvar – den är publik med flit.
+
 ## Snabbhet och cache
 
 - `styles.css` och `app.js` länkas med `?v=hash` och cachas i ett år (`immutable`). Hashen sätts av `scripts/build.mjs`, som körs automatiskt i `npm run build` – även på Vercel – så en ändring i CSS/JS når besökarna direkt vid nästa deploy.

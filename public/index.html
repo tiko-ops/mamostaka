@@ -3,9 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mamosta – Rätta din svenska text gratis</title>
-  <meta name="description" content="Rätta stavfel, särskrivningar och grammatik i din svenska text – med förklaringar till varje ändring. Gratis, utan konto, och din text sparas inte.">
+  <title>Stavningskontroll och grammatik på svenska – gratis | Mamosta</title>
+  <meta name="description" content="Gratis stavningskontroll och grammatikkontroll för svensk text. Rättar stavfel, särskrivningar, de/dem och komma – och förklarar varje ändring. Utan konto.">
   <link rel="canonical" href="https://www.mamosta.se/">
+  <link rel="alternate" hreflang="sv" href="https://www.mamosta.se/">
+  <link rel="alternate" hreflang="en" href="https://www.mamosta.se/en">
+  <link rel="alternate" hreflang="ar" href="https://www.mamosta.se/ar">
+  <link rel="alternate" hreflang="x-default" href="https://www.mamosta.se/">
   <meta name="color-scheme" content="light dark">
   <meta name="theme-color" content="#f7f6f2" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#161716" media="(prefers-color-scheme: dark)">
@@ -13,8 +17,8 @@
   <meta property="og:type" content="website">
   <meta property="og:locale" content="sv_SE">
   <meta property="og:site_name" content="Mamosta">
-  <meta property="og:title" content="Mamosta – Rätta din svenska text gratis">
-  <meta property="og:description" content="Rätta stavfel, särskrivningar och grammatik på några sekunder. Gratis, utan konto – din text sparas inte.">
+  <meta property="og:title" content="Gratis stavningskontroll och grammatik på svenska – Mamosta">
+  <meta property="og:description" content="Rätta stavfel, särskrivningar och grammatik på några sekunder – och få varje ändring förklarad. Gratis, utan konto.">
   <meta property="og:url" content="https://www.mamosta.se/">
   <meta property="og:image" content="https://www.mamosta.se/og-image.png">
   <meta property="og:image:width" content="1200">
@@ -24,7 +28,7 @@
 
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <link rel="stylesheet" href="/styles.css?v=ef4972eca5">
+  <link rel="stylesheet" href="/styles.css?v=519492c78f">
   <script type="speculationrules">
   {"prerender": [{"where": {"and": [{"href_matches": "/*"}, {"not": {"href_matches": "/api/*"}}]}, "eagerness": "moderate"}]}
   </script>
@@ -45,19 +49,108 @@
   </script>
 
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Mamosta",
-    "url": "https://www.mamosta.se/",
-    "description": "Gratis rättning av stavning, särskrivningar och grammatik i svensk text, med förklaringar.",
-    "inLanguage": "sv",
-    "applicationCategory": "UtilitiesApplication",
-    "operatingSystem": "Alla",
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "SEK" }
-  }
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.mamosta.se/#org",
+      "name": "Mamosta",
+      "url": "https://www.mamosta.se/",
+      "logo": "https://www.mamosta.se/apple-touch-icon.png"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.mamosta.se/#site",
+      "name": "Mamosta",
+      "url": "https://www.mamosta.se/",
+      "inLanguage": "sv",
+      "publisher": {
+        "@id": "https://www.mamosta.se/#org"
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "name": "Mamosta – stavningskontroll och grammatik",
+      "url": "https://www.mamosta.se/",
+      "description": "Gratis stavningskontroll och grammatikkontroll för svensk text, med förklaringar till varje ändring.",
+      "inLanguage": "sv",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Alla",
+      "isAccessibleForFree": true,
+      "featureList": [
+        "Stavningskontroll",
+        "Grammatikkontroll",
+        "Särskrivningar",
+        "Kommatering",
+        "Förklaringar på svenska, engelska, arabiska och kurdiska"
+      ],
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "SEK"
+      },
+      "publisher": {
+        "@id": "https://www.mamosta.se/#org"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Är Mamosta gratis?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Ja. Mamosta är helt gratis och du behöver inget konto."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Vad rättar Mamosta?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Stavfel, särskrivningar, grammatik som de och dem, kommatering och stor eller liten bokstav. Din stil och det du vill säga behålls."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Sparas min text?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Nej. Texten skickas krypterat för att rättas och sparas eller loggas inte av Mamosta. Vi använder inga cookies."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Hur lång text kan jag rätta?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Upp till 5 000 tecken åt gången, ungefär en till två sidor. Har du en längre text kan du rätta den i delar."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Kan jag få förklaringarna på mitt språk?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Ja. Förklaringarna finns på svenska, enkel svenska, engelska, arabiska och kurdiska (sorani och kurmanji)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Kan jag lita på rättningen?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Mamosta använder AI och hittar de flesta fel, men ingen rättning är perfekt. Läs igenom resultatet – du kan ångra varje ändring du inte vill ha."
+          }
+        }
+      ]
+    }
+  ]
+}
   </script>
-  <script src="/app.js?v=70481ee1b7" defer></script>
+  <script src="/app.js?v=16a3902073" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#text">Hoppa till textfältet</a>
@@ -74,8 +167,8 @@
 
   <main class="wrap">
     <section class="intro">
-      <h1>Rätta din svenska text</h1>
-      <p class="lead">Stavfel, särskrivningar och grammatik – rättat och förklarat på några sekunder. Gratis och utan konto.</p>
+      <h1>Rätta stavning och grammatik</h1>
+      <p class="lead">Gratis stavningskontroll för svensk text. Stavfel, särskrivningar och grammatik – rättat och förklarat på några sekunder. Utan konto.</p>
     </section>
 
     <form id="form" class="editor" novalidate>
@@ -165,15 +258,55 @@
         <li><a href="/guider/sin-eller-hans">Sin eller hans?</a></li>
         <li><a href="/guider/stor-eller-liten-bokstav">Stor eller liten bokstav?</a></li>
         <li><a href="/guider/ihop-eller-isar">I dag eller idag?</a></li>
+        <li><a href="/guider/enda-eller-anda">Enda eller ända?</a></li>
+        <li><a href="/guider/an-eller-en">Än eller en?</a></li>
+        <li><a href="/guider/sen-eller-sedan">Sen eller sedan?</a></li>
+        <li><a href="/guider/mig-eller-mej">Mig eller mej?</a></li>
+        <li><a href="/guider/forkortningar">Förkortningar</a></li>
+        <li><a href="/guider/siffror-och-datum">Siffror och datum</a></li>
       </ul>
 
-      <p>Texten skickas krypterat för att rättas och sparas inte av Mamosta. Vi använder inga cookies.</p>
+      <h2>Så fungerar stavningskontrollen</h2>
+      <ol class="steps">
+        <li><strong>Klistra in</strong> din svenska text – ett mejl, en ansökan, en uppsats eller ett inlägg.</li>
+        <li><strong>Tryck på Korrigera.</strong> Mamosta rättar stavning, grammatik och kommatering på några sekunder.</li>
+        <li><strong>Se vad som ändrades</strong> och varför. Behåll det du vill, ångra resten och kopiera texten.</li>
+      </ol>
+    </section>
+
+    <section class="faq" aria-labelledby="faq-title">
+      <h2 id="faq-title">Vanliga frågor</h2>
+      <details>
+        <summary>Är Mamosta gratis?</summary>
+        <p>Ja. Mamosta är helt gratis och du behöver inget konto.</p>
+      </details>
+      <details>
+        <summary>Vad rättar Mamosta?</summary>
+        <p>Stavfel, särskrivningar, grammatik som de och dem, kommatering och stor eller liten bokstav. Din stil och det du vill säga behålls.</p>
+      </details>
+      <details>
+        <summary>Sparas min text?</summary>
+        <p>Nej. Texten skickas krypterat för att rättas och sparas eller loggas inte av Mamosta. Vi använder inga cookies.</p>
+      </details>
+      <details>
+        <summary>Hur lång text kan jag rätta?</summary>
+        <p>Upp till 5 000 tecken åt gången, ungefär en till två sidor. Har du en längre text kan du rätta den i delar.</p>
+      </details>
+      <details>
+        <summary>Kan jag få förklaringarna på mitt språk?</summary>
+        <p>Ja. Förklaringarna finns på svenska, enkel svenska, engelska, arabiska och kurdiska (sorani och kurmanji).</p>
+      </details>
+      <details>
+        <summary>Kan jag lita på rättningen?</summary>
+        <p>Mamosta använder AI och hittar de flesta fel, men ingen rättning är perfekt. Läs igenom resultatet – du kan ångra varje ändring du inte vill ha.</p>
+      </details>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="wrap">
       <p>© Mamosta · <a href="/guider">Guider</a> · <a href="/integritet">Integritet</a> · Inga cookies</p>
+      <p class="langs"><a href="/en" hreflang="en" lang="en">English</a> · <a href="/ar" hreflang="ar" lang="ar">العربية</a></p>
     </div>
   </footer>
 </body>

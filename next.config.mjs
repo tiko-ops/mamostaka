@@ -6,6 +6,8 @@ const nextConfig = {
       beforeFiles: [
         { source: "/", destination: "/index.html" },
         { source: "/integritet", destination: "/integritet.html" },
+        { source: "/en", destination: "/en.html" },
+        { source: "/ar", destination: "/ar.html" },
         { source: "/guider", destination: "/guider/index.html" },
         // Bara slugs utan punkt, så att /guider/index.html inte skrivs om en gång till
         { source: "/guider/:slug([a-z0-9-]+)", destination: "/guider/:slug.html" },
@@ -35,6 +37,13 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      // En adress för hela sajten: mamosta.se → www.mamosta.se (undviker dubbelt innehåll i Google)
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "mamosta.se" }],
+        destination: "https://www.mamosta.se/:path*",
+        permanent: true,
+      },
       // Gammal platshållarsida
       { source: "/villkor", destination: "/integritet", permanent: true },
     ];

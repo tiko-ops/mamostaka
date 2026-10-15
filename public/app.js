@@ -67,6 +67,15 @@
     if (saved && langSelect.querySelector(`option[value="${saved}"]`)) langSelect.value = saved;
   } catch {}
 
+  // Länkar från /en och /ar (?lang=en, ?lang=ar) väljer förklaringsspråk direkt
+  try {
+    const urlLang = new URLSearchParams(location.search).get("lang");
+    if (urlLang && langSelect.querySelector(`option[value="${CSS.escape(urlLang)}"]`)) {
+      langSelect.value = urlLang;
+      localStorage.setItem(LANG_KEY, urlLang);
+    }
+  } catch {}
+
   // ---------- Teckenräknare ----------
 
   function updateCounter() {
@@ -511,6 +520,10 @@
     "ihop-eller-isar": "Ihop eller isär?",
     sarskrivning: "Särskrivning",
     "stor-eller-liten-bokstav": "Stor eller liten bokstav?",
+    "enda-eller-anda": "Enda eller ända?",
+    "an-eller-en": "Än eller en?",
+    "sen-eller-sedan": "Sen eller sedan?",
+    "mig-eller-mej": "Mig eller mej?",
   };
 
   const I_WORDS = /^i ?(dag|går|morgon|kväll|stället|alla ?fall)$/;
@@ -519,6 +532,10 @@
     [["var", "vart", "blev"], "var-eller-vart"],
     [["och", "att", "å"], "och-eller-att"],
     [["sin", "sitt", "sina", "hans", "hennes", "deras"], "sin-eller-hans"],
+    [["enda", "ända"], "enda-eller-anda"],
+    [["än", "en"], "an-eller-en"],
+    [["sen", "sedan"], "sen-eller-sedan"],
+    [["mig", "mej", "dig", "dej", "sig", "sej"], "mig-eller-mej"],
   ];
 
   function guideFor(from, to) {

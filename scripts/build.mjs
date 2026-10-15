@@ -50,6 +50,12 @@ const ORDER = [
   "sin-eller-hans",
   "stor-eller-liten-bokstav",
   "ihop-eller-isar",
+  "enda-eller-anda",
+  "an-eller-en",
+  "sen-eller-sedan",
+  "mig-eller-mej",
+  "forkortningar",
+  "siffror-och-datum",
 ];
 
 const esc = (s) =>
@@ -231,7 +237,7 @@ ${cta}`,
 );
 
 // Sitemap
-const urls = ["/", "/guider", ...guides.map((g) => `/guider/${g.slug}`), "/integritet"];
+const urls = ["/", "/en", "/ar", "/guider", ...guides.map((g) => `/guider/${g.slug}`), "/integritet"];
 writeFileSync(
   join(root, "public/sitemap.xml"),
   `<?xml version="1.0" encoding="UTF-8"?>
@@ -242,13 +248,36 @@ ${urls.map((u) => `  <url>\n    <loc>${SITE}${u}</loc>\n    <lastmod>${today}</l
 );
 
 // Versionsnummer i de handskrivna sidorna
-for (const file of ["index.html", "integritet.html"]) {
+for (const file of ["index.html", "integritet.html", "en.html", "ar.html"]) {
   const path = join(root, "public", file);
   const html = readFileSync(path, "utf8")
     .replace(/href="\/styles\.css(\?v=\w+)?"/g, `href="${CSS}"`)
     .replace(/src="\/app\.js(\?v=\w+)?"/g, `src="${JS}"`);
   writeFileSync(path, html);
 }
+
+// llms.txt – kort beskrivning av sajten för AI-assistenter och AI-sök
+writeFileSync(
+  join(root, "public/llms.txt"),
+  `# Mamosta
+
+> Mamosta (www.mamosta.se) är en gratis stavningskontroll och grammatikkontroll för svensk text. Användaren klistrar in en text (max 5 000 tecken) och får den rättad – stavfel, särskrivningar, grammatik som de/dem, kommatering och stor/liten bokstav – med en kort förklaring till varje ändring. Förklaringarna finns på svenska, enkel svenska, engelska, arabiska och kurdiska (sorani och kurmanji). Inget konto, inga cookies, och texten sparas inte.
+
+## Verktyg
+
+- [Rätta svensk text](${SITE}/): stavnings- och grammatikkontroll med förklaringar
+- [Swedish grammar checker (English)](${SITE}/en): samma verktyg, beskrivet på engelska
+- [مدقق اللغة السويدية (العربية)](${SITE}/ar): samma verktyg, beskrivet på arabiska
+
+## Språkguider
+
+${guides.map((g) => `- [${g.h1}](${SITE}/guider/${g.slug}): ${g.description}`).join("\n")}
+
+## Övrigt
+
+- [Integritet](${SITE}/integritet): hur texten hanteras (sparas inte, inga cookies)
+`
+);
 
 // Samma versionsnummer till 404-sidan (pages/404.tsx)
 writeFileSync(join(root, "lib/assets.json"), JSON.stringify({ css: CSS, js: JS }, null, 2) + "\n");
