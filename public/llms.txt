@@ -1,0 +1,30 @@
+# Mamosta
+
+> Mamosta (www.mamosta.se) är en gratis stavningskontroll och grammatikkontroll för svensk text. Användaren klistrar in en text (max 5 000 tecken) och får den rättad – stavfel, särskrivningar, grammatik som de/dem, kommatering och stor/liten bokstav – med en kort förklaring till varje ändring. Förklaringarna finns på svenska, enkel svenska, engelska, arabiska och kurdiska (sorani och kurmanji). Inget konto, inga cookies, och texten sparas inte.
+
+## Verktyg
+
+- [Rätta svensk text](https://www.mamosta.se/): stavnings- och grammatikkontroll med förklaringar
+- [Swedish grammar checker (English)](https://www.mamosta.se/en): samma verktyg, beskrivet på engelska
+- [مدقق اللغة السويدية (العربية)](https://www.mamosta.se/ar): samma verktyg, beskrivet på arabiska
+
+## Språkguider
+
+- [De eller dem?](https://www.mamosta.se/guider/de-eller-dem): De eller dem? Lär dig regeln på en minut med enkla knep och exempel – och slipp ett av de vanligaste felen i svenska.
+- [Särskrivning](https://www.mamosta.se/guider/sarskrivning): Vad är särskrivning och hur undviker du det? Regeln för sammansatta ord i svenska, vanliga fel och när du ska använda bindestreck.
+- [När ska man sätta komma?](https://www.mamosta.se/guider/komma): Kommaregler i svenska på ett enkelt sätt: komma före men, efter bisats, vid uppräkning och inskott. Med exempel och övningar.
+- [Och eller att?](https://www.mamosta.se/guider/och-eller-att): Och eller att? I tal låter båda som ”å”. Lär dig när du ska skriva och och när du ska skriva att – med ett enkelt test och exempel.
+- [Var eller vart?](https://www.mamosta.se/guider/var-eller-vart): Var eller vart? Var handlar om plats och vart om riktning. Lär dig skillnaden med ett enkelt knep och exempel.
+- [Sin eller hans?](https://www.mamosta.se/guider/sin-eller-hans): Sin, sitt och sina eller hans, hennes och deras? Lär dig när du ska använda det reflexiva possessiva pronomenet – med tydliga exempel.
+- [Stor eller liten bokstav?](https://www.mamosta.se/guider/stor-eller-liten-bokstav): Skrivs måndag, januari och svenska med stor eller liten bokstav? Här är reglerna för stor bokstav i svenska – med exempel.
+- [Ihop eller isär? I dag, i går, i stället](https://www.mamosta.se/guider/ihop-eller-isar): Ska man skriva i dag eller idag, i går eller igår, i stället eller istället? Här är vilka former som är rätt – och vilka som alltid skrivs isär.
+- [Enda eller ända?](https://www.mamosta.se/guider/enda-eller-anda): Enda eller ända? Enda betyder ”den enda, bara en” och ända betyder ”hela vägen” eller ”slutet”. Lär dig skillnaden med exempel och övningar.
+- [Än eller en?](https://www.mamosta.se/guider/an-eller-en): Än eller en? Skriv ”än” när du jämför (större än, mer än) och ”en” som artikel eller räkneord (en bok, en gång). Enkla regler och exempel.
+- [Sen eller sedan?](https://www.mamosta.se/guider/sen-eller-sedan): Ska man skriva sen eller sedan? Sedan passar i all text, sen är en kortform som funkar i vardaglig text. Och så betyder sen också ”försenad”.
+- [Mig eller mej?](https://www.mamosta.se/guider/mig-eller-mej): Mig eller mej, dig eller dej, ska eller skall? Båda formerna finns, men de passar i olika texter. Så väljer du rätt – med exempel.
+- [Förkortningar: t.ex., bl.a. och osv.](https://www.mamosta.se/guider/forkortningar): Hur skriver man t.ex., bl.a., osv. och dvs.? Här är de vanligaste svenska förkortningarna, hur de skrivs med punkt och när du hellre ska skriva ut orden.
+- [Siffror, datum och klockslag](https://www.mamosta.se/guider/siffror-och-datum): Ska man skriva tre eller 3? Hur skriver man datum, klockslag och stora tal på svenska? De viktigaste reglerna med tydliga exempel.
+
+## Övrigt
+
+- [Integritet](https://www.mamosta.se/integritet): hur texten hanteras (sparas inte, inga cookies)
