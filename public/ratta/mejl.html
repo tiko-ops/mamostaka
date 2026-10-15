@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rätta mejl gratis – stavning och grammatik på svenska | Mamosta</title>
+  <meta name="description" content="Skicka mejl utan stavfel. Rätta stavning, grammatik och kommatering i ditt mejl gratis på några sekunder – med förklaring till varje ändring.">
+  <link rel="canonical" href="https://www.mamosta.se/ratta/mejl">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f7f6f2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#161716" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="sv_SE">
+  <meta property="og:site_name" content="Mamosta">
+  <meta property="og:title" content="Rätta mejl gratis – stavning och grammatik på svenska | Mamosta">
+  <meta property="og:description" content="Skicka mejl utan stavfel. Rätta stavning, grammatik och kommatering i ditt mejl gratis på några sekunder – med förklaring till varje ändring.">
+  <meta property="og:url" content="https://www.mamosta.se/ratta/mejl">
+  <meta property="og:image" content="https://www.mamosta.se/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/styles.css?v=24acd3426b">
+  <script type="speculationrules">
+  {"prerender": [{"where": {"and": [{"href_matches": "/*"}, {"not": {"href_matches": "/api/*"}}]}, "eagerness": "moderate"}]}
+  </script>
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    (function () {
+      function load() {
+        var s = document.createElement("script");
+        s.defer = true;
+        s.src = "/_vercel/insights/script.js";
+        document.head.appendChild(s);
+      }
+      if (document.prerendering) document.addEventListener("prerenderingchange", load, { once: true });
+      else load();
+    })();
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "name": "Rätta mejl gratis – stavning och grammatik på svenska | Mamosta",
+      "url": "https://www.mamosta.se/ratta/mejl",
+      "inLanguage": "sv",
+      "description": "Skicka mejl utan stavfel. Rätta stavning, grammatik och kommatering i ditt mejl gratis på några sekunder – med förklaring till varje ändring.",
+      "isPartOf": {
+        "@id": "https://www.mamosta.se/#site"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Mamosta",
+          "item": "https://www.mamosta.se/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Rätta mejl",
+          "item": "https://www.mamosta.se/ratta/mejl"
+        }
+      ]
+    }
+  ]
+}
+  </script>
+  <script src="/app.js?v=dd8b2c01d9" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#text">Hoppa till textfältet</a>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="logo" href="/" aria-label="Mamosta, startsida">Mamosta</a>
+      <nav aria-label="Huvudmeny">
+        <a href="/">Rätta text</a>
+        <a href="/guider">Guider</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="content" class="wrap">
+    <section class="intro">
+      <h1>Rätta ditt mejl</h1>
+      <p class="lead">Skicka mejl utan stavfel. Klistra in texten, rätta på några sekunder och kopiera tillbaka till din e-post.</p>
+    </section>
+
+    <form id="form" class="editor" novalidate>
+      <label for="text" class="visually-hidden">Text att korrigera</label>
+      <textarea id="text" name="text" rows="10" spellcheck="false" autocomplete="off"
+        placeholder="Klistra in din text här…" aria-describedby="counter error"></textarea>
+
+      <div class="meta">
+        <button id="example" type="button" class="link-btn">Prova med en exempeltext</button>
+        <span class="hint" aria-hidden="true" hidden><kbd>Ctrl</kbd> + <kbd>Enter</kbd> för att korrigera</span>
+        <span id="counter" class="counter">0 ord · 0 / 5 000 tecken</span>
+      </div>
+
+      <p id="error" class="error" role="alert" hidden></p>
+
+      <div class="actions">
+        <button id="submit" type="submit" class="btn btn-primary">
+          <span class="spinner" aria-hidden="true"></span>
+          <span class="label">Korrigera</span>
+        </button>
+        <button id="clear" type="button" class="btn btn-ghost">Rensa</button>
+      </div>
+      <p class="note">Din text sparas inte.</p>
+    </form>
+
+    <section id="result" class="result" aria-labelledby="result-title" hidden>
+      <div class="result-head">
+        <h2 id="result-title" tabindex="-1">Resultat</h2>
+        <p id="summary" class="summary"></p>
+      </div>
+
+      <div class="toolbar">
+        <div class="toggle" role="group" aria-label="Visa">
+          <button type="button" class="toggle-btn" data-view="plain" aria-pressed="true">Korrigerad text</button>
+          <button type="button" class="toggle-btn" data-view="diff" aria-pressed="false">Ändringar</button>
+        </div>
+        <button id="copy" type="button" class="btn btn-secondary">Kopiera</button>
+      </div>
+
+      <div id="output" class="output" aria-live="off"></div>
+
+      <p class="legend" id="legend">
+        <del>Överstruket</del> är borttaget, <ins>markerat</ins> är tillagt. Klicka på en ändring för att ångra den.
+      </p>
+
+      <section id="changes" class="changes" aria-labelledby="changes-title" hidden>
+        <div class="changes-head">
+          <h3 id="changes-title">Vad ändrades?</h3>
+          <label class="lang">
+            <span>Förklaringar på</span>
+            <select id="lang">
+              <option value="sv">Svenska</option>
+              <option value="sv-enkel">Enkel svenska</option>
+              <option value="en" lang="en">English</option>
+              <option value="ar" lang="ar">العربية</option>
+              <option value="ckb" lang="ckb">کوردی (سۆرانی)</option>
+              <option value="kmr" lang="kmr">Kurdî (Kurmancî)</option>
+            </select>
+          </label>
+        </div>
+        <p id="change-stats" class="change-stats" hidden></p>
+        <ol id="change-list" class="change-list"></ol>
+        <p id="changes-note" class="changes-note" hidden></p>
+      </section>
+    </section>
+
+    <p id="status" class="visually-hidden" role="status" aria-live="polite"></p>
+
+    <article class="prose usecase">
+      <h2>Vanliga fel i mejl</h2>
+      <ul>
+        <li><strong>Hälsningen</strong>: enligt Svenska skrivregler sätts komma före tilltalet – <em>Hej, Anna!</em> – men <em>Hej Anna!</em> är också vanligt i mejl. <a href="/guider/komma">Läs mer</a></li>
+        <li><strong>Avslutningen</strong>: <em>Med vänliga hälsningar</em> har stor bokstav bara på första ordet. Förkortningen <em>Mvh</em> passar bäst i mer vardagliga mejl.</li>
+        <li><strong>Stor bokstav</strong> i veckodagar och månader: <em>Vi ses på måndag den 3 juni.</em> <a href="/guider/stor-eller-liten-bokstav">Läs mer</a></li>
+        <li><strong>Talspråk</strong> i formella mejl: <em>mig</em> och <em>de</em> i stället för <em>mej</em> och <em>dom</em>. <a href="/guider/mig-eller-mej">Läs mer</a></li>
+        <li><strong>Särskrivningar</strong>: <em>kundtjänst</em>, <em>möteslänk</em>, <em>arbetsdag</em>. <a href="/guider/sarskrivning">Läs mer</a></li>
+      </ul>
+
+      <h2>Innan du trycker på skicka</h2>
+      <ol>
+        <li>Säger ämnesraden vad mejlet handlar om?</li>
+        <li>Står det viktigaste i första stycket?</li>
+        <li>Är det tydligt vad du vill att mottagaren ska göra?</li>
+        <li>Har du bifogat filen du nämner?</li>
+      </ol>
+
+      <section class="more" aria-labelledby="more-title">
+        <h2 id="more-title">Rätta andra texter</h2>
+        <ul>
+        <li><a href="/ratta/personligt-brev">Rätta personligt brev</a></li>
+        <li><a href="/ratta/cv">Rätta CV</a></li>
+        <li><a href="/ratta/uppsats">Korrekturläs uppsats</a></li>
+        </ul>
+      </section>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>© Mamosta · <a href="/guider">Guider</a> · <a href="/integritet">Integritet</a> · Inga cookies</p>
+    </div>
+  </footer>
+</body>
+</html>

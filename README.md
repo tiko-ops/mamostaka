@@ -34,7 +34,7 @@ Next.js används bara för API-routen. Sidorna är vanliga statiska filer.
 
 Om strömningen avbryts slutar svaret med `[Fel vid strömning]`.
 
-**Förklara ändringar** – svaret är JSON `{ "reasons": ["...", ...] }`, en per ändring:
+**Förklara ändringar** – svaret är JSON `{ "reasons": [...], "categories": [...] }`, en förklaring och en kategori per ändring:
 
 ```json
 {
@@ -44,6 +44,8 @@ Om strömningen avbryts slutar svaret med `[Fel vid strömning]`.
 ```
 
 `lang`: `sv`, `sv-enkel`, `en`, `ar`, `ckb` (sorani) eller `kmr` (kurmanji). Max 40 ändringar, max 400 tecken per fält.
+
+`categories` är en av `stavning`, `grammatik`, `sarskrivning`, `skiljetecken`, `versaler`, `ordval`, `stil` (eller tom). I gränssnittet används först den kategori som följer av passande guide, sedan API:ts, sedan en enkel gissning.
 
 Fel ger **400 / 429 / 500 / 504** med `{ "error": "Vänligt felmeddelande på svenska" }`.
 
@@ -88,7 +90,8 @@ Skriptet skriver `public/guider/*.html`, hubbsidan `/guider` och en ny `public/s
 
 - **En adress:** `mamosta.se` omdirigeras permanent till `www.mamosta.se` (next.config.mjs), så att Google bara ser en version av varje sida.
 - **Sökord:** startsidan är optimerad för *stavningskontroll* och *grammatikkontroll*, med en FAQ och strukturerad data (Organization, WebSite, WebApplication, FAQPage).
-- **Guider:** 14 språkguider i `content/guider/` – nya guider läggs till där och i `ORDER` i `scripts/build.mjs`.
+- **Guider:** 17 språkguider i `content/guider/` – nya guider läggs till där och i `ORDER` i `scripts/build.mjs`.
+- **Användningssidor:** `/ratta/personligt-brev`, `/ratta/cv`, `/ratta/uppsats` och `/ratta/mejl` har rättningsverktyget inbyggt (formuläret kopieras från `public/index.html` vid bygget) och tips för just den texttypen. Texterna ligger i `content/ratta/`, ordningen i `USE_ORDER` i `scripts/build.mjs`.
 - **Andra språk:** `/en` (Swedish grammar checker) och `/ar` (arabiska) är landningssidor med `hreflang`. Knappen leder till `/?lang=en` resp. `/?lang=ar`, som förväljer förklaringsspråket.
 - **AI-sök:** `public/llms.txt` genereras av `scripts/build.mjs`.
 - **IndexNow:** efter en deploy med nya eller ändrade sidor, kör `node scripts/indexnow.mjs` för att meddela Bing (som även driver ChatGPT-sök och Copilot). Nyckelfilen `public/<nyckel>.txt` ska ligga kvar – den är publik med flit.

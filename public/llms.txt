@@ -8,6 +8,13 @@
 - [Swedish grammar checker (English)](https://www.mamosta.se/en): samma verktyg, beskrivet på engelska
 - [مدقق اللغة السويدية (العربية)](https://www.mamosta.se/ar): samma verktyg, beskrivet på arabiska
 
+## Rätta en viss sorts text
+
+- [Rätta personligt brev](https://www.mamosta.se/ratta/personligt-brev): Rätta stavning, grammatik och kommatering i ditt personliga brev gratis. Klistra in ansökan, få felen rättade och förklarade – innan rekryteraren ser dem.
+- [Rätta CV](https://www.mamosta.se/ratta/cv): Rätta stavning och grammatik i ditt CV gratis. Ett enda stavfel kan räcka för att du sorteras bort – klistra in texten och få den rättad på några sekunder.
+- [Korrekturläs uppsats](https://www.mamosta.se/ratta/uppsats): Korrekturläs uppsatser, rapporter och skolarbeten gratis. Rätta stavning, grammatik och komma – och se förklaringen till varje ändring.
+- [Rätta mejl](https://www.mamosta.se/ratta/mejl): Skicka mejl utan stavfel. Rätta stavning, grammatik och kommatering i ditt mejl gratis på några sekunder – med förklaring till varje ändring.
+
 ## Språkguider
 
 - [De eller dem?](https://www.mamosta.se/guider/de-eller-dem): De eller dem? Lär dig regeln på en minut med enkla knep och exempel – och slipp ett av de vanligaste felen i svenska.
@@ -24,6 +31,9 @@
 - [Mig eller mej?](https://www.mamosta.se/guider/mig-eller-mej): Mig eller mej, dig eller dej, ska eller skall? Båda formerna finns, men de passar i olika texter. Så väljer du rätt – med exempel.
 - [Förkortningar: t.ex., bl.a. och osv.](https://www.mamosta.se/guider/forkortningar): Hur skriver man t.ex., bl.a., osv. och dvs.? Här är de vanligaste svenska förkortningarna, hur de skrivs med punkt och när du hellre ska skriva ut orden.
 - [Siffror, datum och klockslag](https://www.mamosta.se/guider/siffror-och-datum): Ska man skriva tre eller 3? Hur skriver man datum, klockslag och stora tal på svenska? De viktigaste reglerna med tydliga exempel.
+- [Antons eller Anton's?](https://www.mamosta.se/guider/apostrof): På svenska skrivs genitiv utan apostrof: Antons bil, Sveriges huvudstad. Lär dig regeln, undantagen för namn på s, x och z och när kolon används.
+- [En eller ett?](https://www.mamosta.se/guider/en-eller-ett): En eller ett? Ungefär tre av fyra svenska substantiv är en-ord. Här är knepen och ändelserna som hjälper dig att välja rätt – och hur adjektivet ändras.
+- [Kolon och semikolon](https://www.mamosta.se/guider/kolon-och-semikolon): När ska man använda kolon och semikolon på svenska? Kolon inleder en uppräkning eller förklaring, semikolon binder ihop två meningar som hör ihop. Med exempel.
 
 ## Övrigt
 
