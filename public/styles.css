@@ -63,6 +63,7 @@
 
 /* Grund */
 *, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
@@ -186,6 +187,8 @@ textarea[aria-invalid="true"] { border-color: var(--error); }
 }
 .hint { display: none; }
 .counter { margin-left: auto; font-variant-numeric: tabular-nums; }
+.meta { align-items: center; }
+.meta .link-btn { display: inline-flex; align-items: center; min-height: 2.75rem; font-size: var(--text-sm); }
 .counter.over { color: var(--error); font-weight: 600; }
 kbd {
   font: inherit;
@@ -353,6 +356,10 @@ del + ins { margin-left: 2px; }
 .faq details p { margin-top: var(--space-2); color: var(--muted); }
 .site-footer .langs { margin-top: var(--space-2); }
 
+/* Varför Mamosta + användningssidor */
+.why li { margin-bottom: var(--space-2); }
+.usecase { margin-top: var(--space-6); padding-top: var(--space-6); border-top: 1px solid var(--border); }
+
 /* Textsidor */
 .landing .btn { text-decoration: none; margin: var(--space-2) 0 var(--space-3); }
 .landing .lead { margin-bottom: var(--space-3); }
@@ -422,6 +429,20 @@ select {
   font-variant-numeric: tabular-nums;
 }
 .change-list .pair { font-weight: 500; }
+.cat {
+  display: inline-block;
+  margin-inline-end: var(--space-2);
+  padding: 0 var(--space-2);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: 999px;
+  vertical-align: 0.1em;
+}
+.change-stats { margin: 0 0 var(--space-2); font-size: var(--text-sm); color: var(--muted); }
 .change-list .reason { margin-top: var(--space-1); color: var(--muted); }
 .change-list .reason.muted { font-style: italic; }
 .change-list .reason[dir="rtl"] { text-align: right; }

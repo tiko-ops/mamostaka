@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Korrekturläs uppsats gratis – stavning, grammatik och komma | Mamosta</title>
+  <meta name="description" content="Korrekturläs uppsatser, rapporter och skolarbeten gratis. Rätta stavning, grammatik och komma – och se förklaringen till varje ändring.">
+  <link rel="canonical" href="https://www.mamosta.se/ratta/uppsats">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f7f6f2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#161716" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="sv_SE">
+  <meta property="og:site_name" content="Mamosta">
+  <meta property="og:title" content="Korrekturläs uppsats gratis – stavning, grammatik och komma | Mamosta">
+  <meta property="og:description" content="Korrekturläs uppsatser, rapporter och skolarbeten gratis. Rätta stavning, grammatik och komma – och se förklaringen till varje ändring.">
+  <meta property="og:url" content="https://www.mamosta.se/ratta/uppsats">
+  <meta property="og:image" content="https://www.mamosta.se/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/styles.css?v=24acd3426b">
+  <script type="speculationrules">
+  {"prerender": [{"where": {"and": [{"href_matches": "/*"}, {"not": {"href_matches": "/api/*"}}]}, "eagerness": "moderate"}]}
+  </script>
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    (function () {
+      function load() {
+        var s = document.createElement("script");
+        s.defer = true;
+        s.src = "/_vercel/insights/script.js";
+        document.head.appendChild(s);
+      }
+      if (document.prerendering) document.addEventListener("prerenderingchange", load, { once: true });
+      else load();
+    })();
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "name": "Korrekturläs uppsats gratis – stavning, grammatik och komma | Mamosta",
+      "url": "https://www.mamosta.se/ratta/uppsats",
+      "inLanguage": "sv",
+      "description": "Korrekturläs uppsatser, rapporter och skolarbeten gratis. Rätta stavning, grammatik och komma – och se förklaringen till varje ändring.",
+      "isPartOf": {
+        "@id": "https://www.mamosta.se/#site"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Mamosta",
+          "item": "https://www.mamosta.se/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Korrekturläs uppsats",
+          "item": "https://www.mamosta.se/ratta/uppsats"
+        }
+      ]
+    }
+  ]
+}
+  </script>
+  <script src="/app.js?v=dd8b2c01d9" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#text">Hoppa till textfältet</a>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="logo" href="/" aria-label="Mamosta, startsida">Mamosta</a>
+      <nav aria-label="Huvudmeny">
+        <a href="/">Rätta text</a>
+        <a href="/guider">Guider</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="content" class="wrap">
+    <section class="intro">
+      <h1>Korrekturläs din uppsats</h1>
+      <p class="lead">Rätta stavning, grammatik och kommatering i uppsatser, rapporter och skolarbeten – och se förklaringen till varje ändring, så att du lär dig till nästa gång.</p>
+    </section>
+
+    <form id="form" class="editor" novalidate>
+      <label for="text" class="visually-hidden">Text att korrigera</label>
+      <textarea id="text" name="text" rows="10" spellcheck="false" autocomplete="off"
+        placeholder="Klistra in din text här…" aria-describedby="counter error"></textarea>
+
+      <div class="meta">
+        <button id="example" type="button" class="link-btn">Prova med en exempeltext</button>
+        <span class="hint" aria-hidden="true" hidden><kbd>Ctrl</kbd> + <kbd>Enter</kbd> för att korrigera</span>
+        <span id="counter" class="counter">0 ord · 0 / 5 000 tecken</span>
+      </div>
+
+      <p id="error" class="error" role="alert" hidden></p>
+
+      <div class="actions">
+        <button id="submit" type="submit" class="btn btn-primary">
+          <span class="spinner" aria-hidden="true"></span>
+          <span class="label">Korrigera</span>
+        </button>
+        <button id="clear" type="button" class="btn btn-ghost">Rensa</button>
+      </div>
+      <p class="note">Din text sparas inte.</p>
+    </form>
+
+    <section id="result" class="result" aria-labelledby="result-title" hidden>
+      <div class="result-head">
+        <h2 id="result-title" tabindex="-1">Resultat</h2>
+        <p id="summary" class="summary"></p>
+      </div>
+
+      <div class="toolbar">
+        <div class="toggle" role="group" aria-label="Visa">
+          <button type="button" class="toggle-btn" data-view="plain" aria-pressed="true">Korrigerad text</button>
+          <button type="button" class="toggle-btn" data-view="diff" aria-pressed="false">Ändringar</button>
+        </div>
+        <button id="copy" type="button" class="btn btn-secondary">Kopiera</button>
+      </div>
+
+      <div id="output" class="output" aria-live="off"></div>
+
+      <p class="legend" id="legend">
+        <del>Överstruket</del> är borttaget, <ins>markerat</ins> är tillagt. Klicka på en ändring för att ångra den.
+      </p>
+
+      <section id="changes" class="changes" aria-labelledby="changes-title" hidden>
+        <div class="changes-head">
+          <h3 id="changes-title">Vad ändrades?</h3>
+          <label class="lang">
+            <span>Förklaringar på</span>
+            <select id="lang">
+              <option value="sv">Svenska</option>
+              <option value="sv-enkel">Enkel svenska</option>
+              <option value="en" lang="en">English</option>
+              <option value="ar" lang="ar">العربية</option>
+              <option value="ckb" lang="ckb">کوردی (سۆرانی)</option>
+              <option value="kmr" lang="kmr">Kurdî (Kurmancî)</option>
+            </select>
+          </label>
+        </div>
+        <p id="change-stats" class="change-stats" hidden></p>
+        <ol id="change-list" class="change-list"></ol>
+        <p id="changes-note" class="changes-note" hidden></p>
+      </section>
+    </section>
+
+    <p id="status" class="visually-hidden" role="status" aria-live="polite"></p>
+
+    <article class="prose usecase">
+      <h2>Så korrekturläser du en lång text</h2>
+      <p>Varje rättning tar upp till 5 000 tecken, ungefär en till två sidor. Rätta uppsatsen ett avsnitt i taget – till exempel inledningen, sedan varje kapitel – och kopiera tillbaka den rättade texten till ditt dokument.</p>
+
+      <h2>Vanliga fel i uppsatser</h2>
+      <ul>
+        <li><strong>Komma efter en inledande bisats</strong>: <em>När undersökningen var klar, analyserades svaren.</em> <a href="/guider/komma">Läs mer</a></li>
+        <li><strong>De eller dem</strong>: <em>De flesta av dem som svarade…</em> <a href="/guider/de-eller-dem">Läs mer</a></li>
+        <li><strong>Särskrivningar</strong> av fackord: <em>enkätundersökning</em>, <em>forskningsfråga</em>. <a href="/guider/sarskrivning">Läs mer</a></li>
+        <li><strong>Siffror</strong>: skriv tal upp till tolv med bokstäver i löpande text. <a href="/guider/siffror-och-datum">Läs mer</a></li>
+        <li><strong>Formell stil</strong>: välj <em>i stället</em>, <em>sedan</em> och <em>mig</em> framför vardagliga former. <a href="/guider/ihop-eller-isar">Läs mer</a></li>
+      </ul>
+
+      <h2>Mamosta rättar språket – innehållet är ditt</h2>
+      <p>Mamosta ändrar stavning, grammatik och kommatering men skriver inte om dina resonemang. Kontrollera vad din skola eller ditt lärosäte säger om AI-verktyg i examinerande uppgifter.</p>
+
+      <section class="more" aria-labelledby="more-title">
+        <h2 id="more-title">Rätta andra texter</h2>
+        <ul>
+        <li><a href="/ratta/personligt-brev">Rätta personligt brev</a></li>
+        <li><a href="/ratta/cv">Rätta CV</a></li>
+        <li><a href="/ratta/mejl">Rätta mejl</a></li>
+        </ul>
+      </section>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>© Mamosta · <a href="/guider">Guider</a> · <a href="/integritet">Integritet</a> · Inga cookies</p>
+    </div>
+  </footer>
+</body>
+</html>

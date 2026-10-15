@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rätta CV gratis – stavning och grammatik på svenska | Mamosta</title>
+  <meta name="description" content="Rätta stavning och grammatik i ditt CV gratis. Ett enda stavfel kan räcka för att du sorteras bort – klistra in texten och få den rättad på några sekunder.">
+  <link rel="canonical" href="https://www.mamosta.se/ratta/cv">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f7f6f2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#161716" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="sv_SE">
+  <meta property="og:site_name" content="Mamosta">
+  <meta property="og:title" content="Rätta CV gratis – stavning och grammatik på svenska | Mamosta">
+  <meta property="og:description" content="Rätta stavning och grammatik i ditt CV gratis. Ett enda stavfel kan räcka för att du sorteras bort – klistra in texten och få den rättad på några sekunder.">
+  <meta property="og:url" content="https://www.mamosta.se/ratta/cv">
+  <meta property="og:image" content="https://www.mamosta.se/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/styles.css?v=24acd3426b">
+  <script type="speculationrules">
+  {"prerender": [{"where": {"and": [{"href_matches": "/*"}, {"not": {"href_matches": "/api/*"}}]}, "eagerness": "moderate"}]}
+  </script>
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    (function () {
+      function load() {
+        var s = document.createElement("script");
+        s.defer = true;
+        s.src = "/_vercel/insights/script.js";
+        document.head.appendChild(s);
+      }
+      if (document.prerendering) document.addEventListener("prerenderingchange", load, { once: true });
+      else load();
+    })();
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "name": "Rätta CV gratis – stavning och grammatik på svenska | Mamosta",
+      "url": "https://www.mamosta.se/ratta/cv",
+      "inLanguage": "sv",
+      "description": "Rätta stavning och grammatik i ditt CV gratis. Ett enda stavfel kan räcka för att du sorteras bort – klistra in texten och få den rättad på några sekunder.",
+      "isPartOf": {
+        "@id": "https://www.mamosta.se/#site"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Mamosta",
+          "item": "https://www.mamosta.se/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Rätta CV",
+          "item": "https://www.mamosta.se/ratta/cv"
+        }
+      ]
+    }
+  ]
+}
+  </script>
+  <script src="/app.js?v=dd8b2c01d9" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#text">Hoppa till textfältet</a>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="logo" href="/" aria-label="Mamosta, startsida">Mamosta</a>
+      <nav aria-label="Huvudmeny">
+        <a href="/">Rätta text</a>
+        <a href="/guider">Guider</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="content" class="wrap">
+    <section class="intro">
+      <h1>Rätta ditt CV</h1>
+      <p class="lead">Ett enda stavfel i CV:t kan räcka för att du sorteras bort. Klistra in texten och få stavning, grammatik och kommatering rättade på några sekunder.</p>
+    </section>
+
+    <form id="form" class="editor" novalidate>
+      <label for="text" class="visually-hidden">Text att korrigera</label>
+      <textarea id="text" name="text" rows="10" spellcheck="false" autocomplete="off"
+        placeholder="Klistra in din text här…" aria-describedby="counter error"></textarea>
+
+      <div class="meta">
+        <button id="example" type="button" class="link-btn">Prova med en exempeltext</button>
+        <span class="hint" aria-hidden="true" hidden><kbd>Ctrl</kbd> + <kbd>Enter</kbd> för att korrigera</span>
+        <span id="counter" class="counter">0 ord · 0 / 5 000 tecken</span>
+      </div>
+
+      <p id="error" class="error" role="alert" hidden></p>
+
+      <div class="actions">
+        <button id="submit" type="submit" class="btn btn-primary">
+          <span class="spinner" aria-hidden="true"></span>
+          <span class="label">Korrigera</span>
+        </button>
+        <button id="clear" type="button" class="btn btn-ghost">Rensa</button>
+      </div>
+      <p class="note">Din text sparas inte.</p>
+    </form>
+
+    <section id="result" class="result" aria-labelledby="result-title" hidden>
+      <div class="result-head">
+        <h2 id="result-title" tabindex="-1">Resultat</h2>
+        <p id="summary" class="summary"></p>
+      </div>
+
+      <div class="toolbar">
+        <div class="toggle" role="group" aria-label="Visa">
+          <button type="button" class="toggle-btn" data-view="plain" aria-pressed="true">Korrigerad text</button>
+          <button type="button" class="toggle-btn" data-view="diff" aria-pressed="false">Ändringar</button>
+        </div>
+        <button id="copy" type="button" class="btn btn-secondary">Kopiera</button>
+      </div>
+
+      <div id="output" class="output" aria-live="off"></div>
+
+      <p class="legend" id="legend">
+        <del>Överstruket</del> är borttaget, <ins>markerat</ins> är tillagt. Klicka på en ändring för att ångra den.
+      </p>
+
+      <section id="changes" class="changes" aria-labelledby="changes-title" hidden>
+        <div class="changes-head">
+          <h3 id="changes-title">Vad ändrades?</h3>
+          <label class="lang">
+            <span>Förklaringar på</span>
+            <select id="lang">
+              <option value="sv">Svenska</option>
+              <option value="sv-enkel">Enkel svenska</option>
+              <option value="en" lang="en">English</option>
+              <option value="ar" lang="ar">العربية</option>
+              <option value="ckb" lang="ckb">کوردی (سۆرانی)</option>
+              <option value="kmr" lang="kmr">Kurdî (Kurmancî)</option>
+            </select>
+          </label>
+        </div>
+        <p id="change-stats" class="change-stats" hidden></p>
+        <ol id="change-list" class="change-list"></ol>
+        <p id="changes-note" class="changes-note" hidden></p>
+      </section>
+    </section>
+
+    <p id="status" class="visually-hidden" role="status" aria-live="polite"></p>
+
+    <article class="prose usecase">
+      <h2>Så rättar du ett CV</h2>
+      <p>Klistra in en del i taget – till exempel profiltexten, en anställning eller utbildningen. Varje rättning tar upp till 5 000 tecken. Kopiera sedan tillbaka den rättade texten till ditt dokument.</p>
+
+      <h2>Vanliga fel i CV</h2>
+      <ul>
+        <li><strong>Liten bokstav</strong> i yrkestitlar och månader: <em>lagerarbetare, maj 2021 – augusti 2023</em>. <a href="/guider/stor-eller-liten-bokstav">Läs mer</a></li>
+        <li><strong>Särskrivningar</strong> i titlar och kompetenser: <em>lagerarbetare</em>, <em>truckkort</em>, <em>kundbemötande</em>. <a href="/guider/sarskrivning">Läs mer</a></li>
+        <li><strong>Förkortningar</strong> skrivs med punkt och utan mellanslag: <em>t.ex.</em>, <em>bl.a.</em> <a href="/guider/forkortningar">Läs mer</a></li>
+        <li><strong>Datum och siffror</strong> skrivs på samma sätt genom hela CV:t. <a href="/guider/siffror-och-datum">Läs mer</a></li>
+        <li><strong>Blandade tempus</strong> – använd presens för jobbet du har nu (<em>ansvarar för</em>) och preteritum för tidigare jobb (<em>ansvarade för</em>).</li>
+      </ul>
+
+      <h2>Checklista</h2>
+      <ol>
+        <li>Kontaktuppgifter överst: namn, telefon och e-post.</li>
+        <li>Senaste jobbet och utbildningen först.</li>
+        <li>Korta punkter med det du faktiskt gjorde och uppnådde.</li>
+        <li>Samma format för alla datum och rubriker.</li>
+        <li>Högst två sidor.</li>
+      </ol>
+
+      <section class="more" aria-labelledby="more-title">
+        <h2 id="more-title">Rätta andra texter</h2>
+        <ul>
+        <li><a href="/ratta/personligt-brev">Rätta personligt brev</a></li>
+        <li><a href="/ratta/uppsats">Korrekturläs uppsats</a></li>
+        <li><a href="/ratta/mejl">Rätta mejl</a></li>
+        </ul>
+      </section>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>© Mamosta · <a href="/guider">Guider</a> · <a href="/integritet">Integritet</a> · Inga cookies</p>
+    </div>
+  </footer>
+</body>
+</html>

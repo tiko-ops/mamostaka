@@ -12,6 +12,20 @@
   const MAX_EXPLAIN = 40;
   const CONTEXT_CHARS = 50;
   const LANG_KEY = "mamosta-lang";
+  // Exempeltext med typiska fel (komma, de/dem, försöka och, särskrivning, veckodag, än/en)
+  const EXAMPLE =
+    "Hej! Igår var jag och min kompis på bio men filmen var tråkig så vi gick hem innan den var slut. Dem som satt bredvid oss pratade hela tiden. Nästa gång ska jag försöka och se en action film på Lördag istället, det blir säkert bättre en förra gången.";
+
+  // Kategorier i "Vad ändrades?" (samma nycklar som API:t använder)
+  const CATEGORIES = {
+    stavning: "Stavning",
+    grammatik: "Grammatik",
+    sarskrivning: "Särskrivning",
+    skiljetecken: "Skiljetecken",
+    versaler: "Stor/liten bokstav",
+    ordval: "Ordval",
+    stil: "Stil",
+  };
 
   const RTL = new Set(["ar", "ckb"]);
   const ARABIC_SCRIPT = /[\u0600-\u06FF]/;
@@ -20,6 +34,8 @@
   const form = $("form");
   const input = $("text");
   const counter = $("counter");
+  const exampleBtn = $("example");
+  const hint = form.querySelector(".hint");
   const submitBtn = $("submit");
   const submitLabel = submitBtn.querySelector(".label");
   const clearBtn = $("clear");
@@ -34,6 +50,7 @@
   const changesSection = $("changes");
   const changeList = $("change-list");
   const changesNote = $("changes-note");
+  const changeStats = $("change-stats");
   const langSelect = $("lang");
   const viewBtns = document.querySelectorAll("[data-view]");
 
@@ -58,6 +75,7 @@
   let chunks = null; // null = ingen diff tillgänglig
   let listed = []; // index i chunks för ändringar som visas i "Vad ändrades?"
   let reasonsByLang = {};
+  let apiCategories = []; // kategori per förklarad ändring, från API:t
   let view = "plain"; // korrigerad text visas först, ändringarna en klick bort
 
   // ---------- Inställningar som bara sparas i webbläsaren ----------
@@ -81,7 +99,10 @@
   function updateCounter() {
     const n = input.value.length;
     const over = n > MAX;
-    counter.textContent = `${nf.format(n)} / ${nf.format(MAX)} tecken`;
+    const words = (input.value.match(/\S+/g) || []).length;
+    counter.textContent = `${nf.format(words)} ord · ${nf.format(n)} / ${nf.format(MAX)} tecken`;
+    exampleBtn.hidden = n > 0;
+    hint.hidden = n === 0;
     counter.classList.toggle("over", over);
     input.setAttribute("aria-invalid", String(over));
 
@@ -167,6 +188,7 @@
     chunks = null;
     listed = [];
     reasonsByLang = {};
+    apiCategories = [];
     output.textContent = "";
     summary.textContent = "Korrigerar…";
     legend.hidden = true;
@@ -387,6 +409,11 @@
         pair.append("Tagit bort ", d);
       }
 
+      const cat = document.createElement("span");
+      cat.className = "cat";
+      cat.hidden = true;
+      pair.prepend(cat);
+
       const reason = document.createElement("p");
       reason.className = "reason";
 
@@ -414,6 +441,54 @@
 
     setRestNote();
     showReasons();
+    updateCategories();
+  }
+
+  // Kategori: guiden som passar ändringen, annars API:ts kategori, annars en enkel gissning
+  function categoryFor(c, n) {
+    const g = guideFor(c.del, c.ins);
+    if (g) {
+      if (g.slug === "sarskrivning" || g.slug === "ihop-eller-isar") return "sarskrivning";
+      if (g.slug === "komma" || g.slug === "kolon-och-semikolon" || g.slug === "apostrof") return "skiljetecken";
+      if (g.slug === "stor-eller-liten-bokstav") return "versaler";
+      return "grammatik";
+    }
+    if (CATEGORIES[apiCategories[n]]) return apiCategories[n];
+    const f = c.del.trim();
+    const t = c.ins.trim();
+    if (/^[^\p{L}\p{N}]*$/u.test(f + t)) return "skiljetecken";
+    if (f && t && !/\s/.test(f + t) && editDistance(f.toLowerCase(), t.toLowerCase()) <= Math.max(2, Math.round(Math.max(f.length, t.length) / 3))) {
+      return "stavning";
+    }
+    return null;
+  }
+
+  function editDistance(a, b) {
+    let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+    for (let i = 1; i <= a.length; i++) {
+      const cur = [i];
+      for (let j = 1; j <= b.length; j++) {
+        cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      }
+      prev = cur;
+    }
+    return prev[b.length];
+  }
+
+  function updateCategories() {
+    const counts = {};
+    changeList.querySelectorAll("li").forEach((li, n) => {
+      const key = categoryFor(chunks[Number(li.dataset.i)], n);
+      const el = li.querySelector(".cat");
+      el.hidden = !key;
+      el.textContent = key ? CATEGORIES[key] : "";
+      if (key) counts[key] = (counts[key] || 0) + 1;
+    });
+    const parts = Object.keys(CATEGORIES)
+      .filter((k) => counts[k])
+      .map((k) => `${counts[k]} ${CATEGORIES[k].toLowerCase()}`);
+    changeStats.hidden = parts.length === 0;
+    changeStats.textContent = parts.join(" · ");
   }
 
   function setRestNote() {
@@ -498,7 +573,9 @@
       const data = await res.json();
       if (explainController !== ac) return;
       reasonsByLang[lang] = Array.isArray(data.reasons) ? data.reasons : [];
+      if (Array.isArray(data.categories)) apiCategories = data.categories;
       if (langSelect.value === lang) showReasons();
+      updateCategories();
     } catch {
       if (explainController === ac && !(ac.signal.aborted && ac.signal.reason !== "timeout")) {
         track("Fel", { typ: "förklaring" });
@@ -524,6 +601,9 @@
     "an-eller-en": "Än eller en?",
     "sen-eller-sedan": "Sen eller sedan?",
     "mig-eller-mej": "Mig eller mej?",
+    "en-eller-ett": "En eller ett?",
+    apostrof: "Antons eller Anton's?",
+    "kolon-och-semikolon": "Kolon och semikolon",
   };
 
   const I_WORDS = /^i ?(dag|går|morgon|kväll|stället|alla ?fall)$/;
@@ -536,6 +616,7 @@
     [["än", "en"], "an-eller-en"],
     [["sen", "sedan"], "sen-eller-sedan"],
     [["mig", "mej", "dig", "dej", "sig", "sej"], "mig-eller-mej"],
+    [["en", "ett"], "en-eller-ett"],
   ];
 
   function guideFor(from, to) {
@@ -545,6 +626,13 @@
     const lt = t.toLowerCase();
     if (f === t) return null;
     let slug = null;
+
+    if (/['’]s\b/.test(f) && f.replace(/['’]/g, "") === t) {
+      return { slug: "apostrof", name: GUIDES.apostrof };
+    }
+    if (/[:;]/.test(f + t) && f.replace(/[:;,.]/g, "") === t.replace(/[:;,.]/g, "")) {
+      return { slug: "kolon-och-semikolon", name: GUIDES["kolon-och-semikolon"] };
+    }
 
     const noSpace = (s) => s.replace(/[\s,-]/g, "");
     const noComma = (s) => s.replace(/,/g, "");
@@ -746,6 +834,7 @@
     chunks = null;
     listed = [];
     reasonsByLang = {};
+    apiCategories = [];
     output.textContent = "";
     changeList.textContent = "";
     result.hidden = true;
@@ -769,6 +858,12 @@
     correct();
   });
   clearBtn.addEventListener("click", clearAll);
+  exampleBtn.addEventListener("click", () => {
+    input.value = EXAMPLE;
+    updateCounter();
+    track("Exempeltext");
+    correct();
+  });
   copyBtn.addEventListener("click", copy);
   viewBtns.forEach((b) => b.addEventListener("click", () => setView(b.dataset.view)));
   output.addEventListener("click", (e) => {

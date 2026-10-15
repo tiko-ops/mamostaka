@@ -56,6 +56,9 @@ const ORDER = [
   "mig-eller-mej",
   "forkortningar",
   "siffror-och-datum",
+  "apostrof",
+  "en-eller-ett",
+  "kolon-och-semikolon",
 ];
 
 const esc = (s) =>
@@ -69,7 +72,7 @@ const guides = ORDER.map((slug) => {
   return { slug, ...JSON.parse(m[1]), body: m[2].trim() };
 });
 
-function page({ title, description, path, ogType = "article", jsonLd, main }) {
+function page({ title, description, path, ogType = "article", jsonLd, main, mainClass = "wrap prose", script = "", skipTo = "#content" }) {
   const url = SITE + path;
   return `<!doctype html>
 <html lang="sv">
@@ -97,10 +100,10 @@ function page({ title, description, path, ogType = "article", jsonLd, main }) {
   ${ANALYTICS}
   <script type="application/ld+json">
 ${JSON.stringify(jsonLd, null, 2)}
-  </script>
+  </script>${script}
 </head>
 <body>
-  <a class="skip-link" href="#content">Hoppa till innehållet</a>
+  <a class="skip-link" href="${skipTo}">${skipTo === "#text" ? "Hoppa till textfältet" : "Hoppa till innehållet"}</a>
 
   <header class="site-header">
     <div class="wrap">
@@ -112,7 +115,7 @@ ${JSON.stringify(jsonLd, null, 2)}
     </div>
   </header>
 
-  <main id="content" class="wrap prose">
+  <main id="content" class="${mainClass}">
 ${main}
   </main>
 
@@ -236,8 +239,89 @@ ${cta}`,
   })
 );
 
+// Sidor för olika användningar (personligt brev, CV …) – med rättningsverktyget inbyggt
+const USE_ORDER = ["personligt-brev", "cv", "uppsats", "mejl"];
+const useCases = USE_ORDER.map((slug) => {
+  const raw = readFileSync(join(root, "content/ratta", `${slug}.html`), "utf8");
+  const m = raw.match(/^<!--\s*([\s\S]*?)\s*-->\s*([\s\S]*)$/);
+  if (!m) throw new Error(`Saknar metadata i ratta/${slug}.html`);
+  return { slug, ...JSON.parse(m[1]), body: m[2].trim() };
+});
+
+// Verktyget hämtas från startsidan, så att det alltid är samma formulär och resultatvy
+const indexHtml = readFileSync(join(root, "public/index.html"), "utf8");
+const toolStart = indexHtml.indexOf('    <form id="form"');
+const toolEnd = indexHtml.indexOf("</p>", indexHtml.indexOf('<p id="status"')) + "</p>".length;
+if (toolStart < 0 || toolEnd < toolStart) throw new Error("Hittar inte verktyget i public/index.html");
+const tool = indexHtml.slice(toolStart, toolEnd);
+
+mkdirSync(join(root, "public/ratta"), { recursive: true });
+for (const u of useCases) {
+  const path = `/ratta/${u.slug}`;
+  const others = useCases
+    .filter((o) => o.slug !== u.slug)
+    .map((o) => `        <li><a href="/ratta/${o.slug}">${esc(o.name)}</a></li>`)
+    .join("\n");
+  const main = `    <section class="intro">
+      <h1>${esc(u.h1)}</h1>
+      <p class="lead">${esc(u.lead)}</p>
+    </section>
+
+${tool}
+
+    <article class="prose usecase">
+${u.body
+  .split("\n")
+  .map((l) => (l ? "      " + l : l))
+  .join("\n")}
+
+      <section class="more" aria-labelledby="more-title">
+        <h2 id="more-title">Rätta andra texter</h2>
+        <ul>
+${others}
+        </ul>
+      </section>
+    </article>`;
+
+  writeFileSync(
+    join(root, "public/ratta", `${u.slug}.html`),
+    page({
+      title: u.title,
+      description: u.description,
+      path,
+      ogType: "website",
+      mainClass: "wrap",
+      skipTo: "#text",
+      script: `\n  <script src="${JS}" defer></script>`,
+      jsonLd: {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebPage",
+            name: u.title,
+            url: SITE + path,
+            inLanguage: "sv",
+            description: u.description,
+            isPartOf: { "@id": `${SITE}/#site` },
+          },
+          breadcrumb([["Mamosta", "/"], [u.name, path]]),
+        ],
+      },
+      main,
+    })
+  );
+}
+
 // Sitemap
-const urls = ["/", "/en", "/ar", "/guider", ...guides.map((g) => `/guider/${g.slug}`), "/integritet"];
+const urls = [
+  "/",
+  ...useCases.map((u) => `/ratta/${u.slug}`),
+  "/en",
+  "/ar",
+  "/guider",
+  ...guides.map((g) => `/guider/${g.slug}`),
+  "/integritet",
+];
 writeFileSync(
   join(root, "public/sitemap.xml"),
   `<?xml version="1.0" encoding="UTF-8"?>
@@ -268,6 +352,10 @@ writeFileSync(
 - [Rätta svensk text](${SITE}/): stavnings- och grammatikkontroll med förklaringar
 - [Swedish grammar checker (English)](${SITE}/en): samma verktyg, beskrivet på engelska
 - [مدقق اللغة السويدية (العربية)](${SITE}/ar): samma verktyg, beskrivet på arabiska
+
+## Rätta en viss sorts text
+
+${useCases.map((u) => `- [${u.name}](${SITE}/ratta/${u.slug}): ${u.description}`).join("\n")}
 
 ## Språkguider
 

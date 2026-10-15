@@ -28,7 +28,7 @@
 
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <link rel="stylesheet" href="/styles.css?v=519492c78f">
+  <link rel="stylesheet" href="/styles.css?v=24acd3426b">
   <script type="speculationrules">
   {"prerender": [{"where": {"and": [{"href_matches": "/*"}, {"not": {"href_matches": "/api/*"}}]}, "eagerness": "moderate"}]}
   </script>
@@ -150,7 +150,7 @@
   ]
 }
   </script>
-  <script src="/app.js?v=16a3902073" defer></script>
+  <script src="/app.js?v=dd8b2c01d9" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#text">Hoppa till textfältet</a>
@@ -177,8 +177,9 @@
         placeholder="Klistra in din text här…" aria-describedby="counter error"></textarea>
 
       <div class="meta">
-        <span class="hint" aria-hidden="true"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> för att korrigera</span>
-        <span id="counter" class="counter">0 / 5 000 tecken</span>
+        <button id="example" type="button" class="link-btn">Prova med en exempeltext</button>
+        <span class="hint" aria-hidden="true" hidden><kbd>Ctrl</kbd> + <kbd>Enter</kbd> för att korrigera</span>
+        <span id="counter" class="counter">0 ord · 0 / 5 000 tecken</span>
       </div>
 
       <p id="error" class="error" role="alert" hidden></p>
@@ -228,6 +229,7 @@
             </select>
           </label>
         </div>
+        <p id="change-stats" class="change-stats" hidden></p>
         <ol id="change-list" class="change-list"></ol>
         <p id="changes-note" class="changes-note" hidden></p>
       </section>
@@ -243,7 +245,24 @@
         <li><strong>Grammatik</strong> – som <a href="/guider/de-eller-dem"><em>de</em> och <em>dem</em></a>, <a href="/guider/sin-eller-hans"><em>sin</em> och <em>hans</em></a>, böjningar och ordföljd.</li>
         <li><strong><a href="/guider/komma">Kommatering</a></strong> och <strong><a href="/guider/stor-eller-liten-bokstav">stor bokstav</a></strong>.</li>
       </ul>
-      <p>Varje ändring förklaras kort, och du kan ångra de ändringar du inte vill ha.</p>
+      <p>Varje ändring förklaras kort, och du kan ångra de ändringar du inte vill ha. Mamosta fungerar som ett gratis rättstavningsprogram och en snabb korrekturläsning direkt i webbläsaren – på dator, surfplatta och mobil.</p>
+
+      <h2>Varför Mamosta?</h2>
+      <ul class="why">
+        <li><strong>Gratis och utan konto</strong> – inga provperioder, ingen inloggning och ingen dagsgräns för vanlig användning.</li>
+        <li><strong>Upp till 5 000 tecken</strong> åt gången – rätta ett helt personligt brev eller en lång text på en gång.</li>
+        <li><strong>Förklaringar på ditt språk</strong> – svenska, enkel svenska, engelska, arabiska och kurdiska.</li>
+        <li><strong>Du bestämmer</strong> – se exakt vad som ändrats och ångra det du inte håller med om.</li>
+        <li><strong>Din text sparas inte</strong> – inga cookies och ingen reklam.</li>
+      </ul>
+
+      <h2>Rätta texten du skriver just nu</h2>
+      <ul class="guide-links">
+        <li><a href="/ratta/personligt-brev">Rätta personligt brev</a></li>
+        <li><a href="/ratta/cv">Rätta CV</a></li>
+        <li><a href="/ratta/uppsats">Korrekturläs uppsats</a></li>
+        <li><a href="/ratta/mejl">Rätta mejl</a></li>
+      </ul>
 
       <h2>Lär du dig svenska?</h2>
       <p>Få förklaringarna på enkel svenska, engelska, arabiska eller kurdiska. Då lär du dig av dina misstag – inte bara rättar dem.</p>
@@ -264,9 +283,12 @@
         <li><a href="/guider/mig-eller-mej">Mig eller mej?</a></li>
         <li><a href="/guider/forkortningar">Förkortningar</a></li>
         <li><a href="/guider/siffror-och-datum">Siffror och datum</a></li>
+        <li><a href="/guider/apostrof">Antons eller Anton's?</a></li>
+        <li><a href="/guider/en-eller-ett">En eller ett?</a></li>
+        <li><a href="/guider/kolon-och-semikolon">Kolon och semikolon</a></li>
       </ul>
 
-      <h2>Så fungerar stavningskontrollen</h2>
+      <h2>Så fungerar stavningskontrollen och korrekturläsningen</h2>
       <ol class="steps">
         <li><strong>Klistra in</strong> din svenska text – ett mejl, en ansökan, en uppsats eller ett inlägg.</li>
         <li><strong>Tryck på Korrigera.</strong> Mamosta rättar stavning, grammatik och kommatering på några sekunder.</li>
