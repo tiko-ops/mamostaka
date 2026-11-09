@@ -107,7 +107,7 @@ p { margin: 0; }
 
 .skip-link {
   position: absolute;
-  left: var(--space-4);
+  inset-inline-start: var(--space-4);
   top: -3rem;
   padding: var(--space-2) var(--space-3);
   background: var(--surface);
@@ -186,7 +186,7 @@ textarea[aria-invalid="true"] { border-color: var(--error); }
   color: var(--muted);
 }
 .hint { display: none; }
-.counter { margin-left: auto; font-variant-numeric: tabular-nums; }
+.counter { margin-inline-start: auto; font-variant-numeric: tabular-nums; }
 .meta { align-items: center; }
 .meta .link-btn { display: inline-flex; align-items: center; min-height: 2.75rem; font-size: var(--text-sm); }
 .counter.over { color: var(--error); font-weight: 600; }
@@ -413,7 +413,8 @@ select {
 }
 .change-list { list-style: none; margin: 0; padding: 0; counter-reset: chg; }
 .change-list li {
-  padding: var(--space-3) 0 var(--space-3) 2rem;
+  padding-block: var(--space-3);
+  padding-inline-start: 2rem;
   border-top: 1px solid var(--border);
   position: relative;
   counter-increment: chg;
@@ -421,7 +422,7 @@ select {
 .change-list li::before {
   content: counter(chg);
   position: absolute;
-  left: 0;
+  inset-inline-start: 0;
   top: var(--space-3);
   width: 1.5rem;
   font-size: var(--text-sm);

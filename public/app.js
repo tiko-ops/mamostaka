@@ -11,10 +11,11 @@
   // Så många ändringar förklaras (samma gräns som i API:t)
   const MAX_EXPLAIN = 40;
   const CONTEXT_CHARS = 50;
-  const LANG_KEY = "mamosta-lang";
-  // Exempeltext med typiska fel (komma, de/dem, försöka och, särskrivning, veckodag, än/en)
+  // Exempeltext med typiska fel (komma, de/dem, försöka och, särskrivning, veckodag, än/en).
+  // Felen står så att varje rättning blir en egen ändring. Användningssidorna har egna
+  // exempel i data-example på knappen.
   const EXAMPLE =
-    "Hej! Igår var jag och min kompis på bio men filmen var tråkig så vi gick hem innan den var slut. Dem som satt bredvid oss pratade hela tiden. Nästa gång ska jag försöka och se en action film på Lördag istället, det blir säkert bättre en förra gången.";
+    "Hej! Igår var jag och min kompis på bio men filmen var tråkig så vi gick hem innan den var slut. Dem som satt bredvid oss pratade hela tiden. Nästa gång ska jag försöka och se en action film på Lördag. Det blir säkert bättre en förra gången.";
 
   // Gränssnittets texter på sidans språk (<html lang="sv|en|ar">). Texten som rättas är alltid svensk.
   const PAGE_LANG = ["en", "ar"].includes(document.documentElement.lang) ? document.documentElement.lang : "sv";
@@ -100,6 +101,7 @@
       added: "Added ",
       removed: "Removed ",
       readMore: "Guide (in Swedish): ",
+      readMoreEn: "Guide: ",
       useFix: "Use the correction",
       undo: "Undo",
       undoChange: "Undo the change",
@@ -177,6 +179,8 @@
     },
   };
   const T = TEXTS[PAGE_LANG];
+  // Varje språksida minns sitt eget förklaringsspråk, så att /en och /ar börjar på sitt språk
+  const LANG_KEY = PAGE_LANG === "sv" ? "mamosta-lang" : `mamosta-lang-${PAGE_LANG}`;
   // Kategorier i "Vad ändrades?" (samma nycklar som API:t använder)
   const CATEGORIES = T.categories;
 
@@ -593,8 +597,10 @@
       const guide = guideFor(c.del, c.ins);
       if (guide) {
         const a = document.createElement("a");
-        a.href = `/guider/${guide.slug}`;
-        a.append(T.readMore, ltr(guide.name));
+        const en = PAGE_LANG === "en" && EN_GUIDES[guide.slug];
+        a.href = en ? `/en/${en.slug}` : `/guider/${guide.slug}`;
+        if (en) a.append(T.readMoreEn, en.name);
+        else a.append(T.readMore, ltr(guide.name));
         a.addEventListener("click", () => track("Guide från förklaring", { guide: guide.slug }));
         actions.append(a);
       }
@@ -769,6 +775,13 @@
     "en-eller-ett": "En eller ett?",
     apostrof: "Antons eller Anton's?",
     "kolon-och-semikolon": "Kolon och semikolon",
+  };
+
+  // Guider som finns på engelska (/en/...), används på den engelska sidan
+  const EN_GUIDES = {
+    "de-eller-dem": { slug: "de-or-dem", name: "De or dem?" },
+    "en-eller-ett": { slug: "en-or-ett", name: "En or ett?" },
+    sarskrivning: { slug: "swedish-compound-words", name: "Compound words" },
   };
 
   const I_WORDS = /^i ?(dag|går|morgon|kväll|stället|alla ?fall)$/;
@@ -1024,7 +1037,7 @@
   });
   clearBtn.addEventListener("click", clearAll);
   exampleBtn.addEventListener("click", () => {
-    input.value = EXAMPLE;
+    input.value = exampleBtn.dataset.example || EXAMPLE;
     updateCounter();
     track("Exempeltext");
     correct();

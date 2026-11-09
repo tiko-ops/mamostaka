@@ -101,7 +101,17 @@ function openai(apiKey: string, payload: object, signal: AbortSignal) {
 
 // ---------- Route ----------
 
+// Anrop från andra webbplatsers sidor stoppas innan de kostar något hos OpenAI.
+// (Anrop utan Origin – t.ex. från curl – släpps igenom; dem begränsar räknaren per IP.)
+const ALLOWED_ORIGIN =
+  /^(https:\/\/(www\.)?mamosta\.se|https:\/\/mamostaka-[a-z0-9-]+\.vercel\.app|http:\/\/localhost(:\d+)?)$/;
+
 export async function POST(req: NextRequest) {
+  const origin = req.headers.get("origin");
+  if (origin && !ALLOWED_ORIGIN.test(origin)) {
+    return fail("Otillåten förfrågan.", 403);
+  }
+
   let body: any;
   try {
     body = await req.json();
