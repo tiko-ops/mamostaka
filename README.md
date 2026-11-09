@@ -92,7 +92,7 @@ Skriptet skriver `public/guider/*.html`, hubbsidan `/guider` och en ny `public/s
 - **Sökord:** startsidan är optimerad för *stavningskontroll* och *grammatikkontroll*, med en FAQ och strukturerad data (Organization, WebSite, WebApplication, FAQPage).
 - **Guider:** 17 språkguider i `content/guider/` – nya guider läggs till där och i `ORDER` i `scripts/build.mjs`.
 - **Användningssidor:** `/ratta/personligt-brev`, `/ratta/cv`, `/ratta/uppsats` och `/ratta/mejl` har rättningsverktyget inbyggt (formuläret kopieras från `public/index.html` vid bygget) och tips för just den texttypen. Texterna ligger i `content/ratta/`, ordningen i `USE_ORDER` i `scripts/build.mjs`.
-- **Andra språk:** `/en` (Swedish grammar checker) och `/ar` (arabiska) är landningssidor med `hreflang`. Knappen leder till `/?lang=en` resp. `/?lang=ar`, som förväljer förklaringsspråket.
+- **Andra språk:** `/en` (Swedish grammar checker) och `/ar` (arabiska) har rättningsverktyget inbyggt med översatt gränssnitt och förklaringar på sidans språk. Texterna ligger i `content/lang/`, verktygets översättningar i `TOOL_TEXTS` i `scripts/build.mjs` och gränssnittets JavaScript-texter i `TEXTS` i `public/app.js` (väljs efter `<html lang>`).
 - **AI-sök:** `public/llms.txt` genereras av `scripts/build.mjs`.
 - **IndexNow:** efter en deploy med nya eller ändrade sidor, kör `node scripts/indexnow.mjs` för att meddela Bing (som även driver ChatGPT-sök och Copilot). Nyckelfilen `public/<nyckel>.txt` ska ligga kvar – den är publik med flit.
 

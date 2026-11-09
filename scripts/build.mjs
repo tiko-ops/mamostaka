@@ -312,6 +312,173 @@ ${others}
   );
 }
 
+// Engelska och arabiska sidor (/en, /ar) med verktyget inbyggt och översatt gränssnitt
+const TOOL_TEXTS = {
+  en: [
+    ["Text att korrigera", "Swedish text to check"],
+    ["Klistra in din text här…", "Paste your Swedish text here…"],
+    ["Prova med en exempeltext", "Try an example text"],
+    ["för att korrigera</span>", "to check</span>"],
+    ["0 ord · 0 / 5 000 tecken", "0 words · 0 / 5,000 characters"],
+    ['<span class="label">Korrigera</span>', '<span class="label">Check text</span>'],
+    [">Rensa</button>", ">Clear</button>"],
+    ["Din text sparas inte.", "Your text is not stored."],
+    [">Resultat</h2>", ">Result</h2>"],
+    ['aria-label="Visa"', 'aria-label="View"'],
+    [">Korrigerad text</button>", ">Corrected text</button>"],
+    [">Ändringar</button>", ">Changes</button>"],
+    [">Kopiera</button>", ">Copy</button>"],
+    ["<del>Överstruket</del> är borttaget, <ins>markerat</ins> är tillagt. Klicka på en ändring för att ångra den.",
+     "<del>Struck through</del> is removed, <ins>highlighted</ins> is added. Click a change to undo it."],
+    [">Vad ändrades?</h3>", ">What changed?</h3>"],
+    ["<span>Förklaringar på</span>", "<span>Explanations in</span>"],
+    ['<option value="sv">Svenska</option>', '<option value="sv">Swedish</option>'],
+    ['<option value="sv-enkel">Enkel svenska</option>', '<option value="sv-enkel">Simple Swedish</option>'],
+  ],
+  ar: [
+    ["Text att korrigera", "النص السويدي المراد تصحيحه"],
+    ["Klistra in din text här…", "الصق نصك السويدي هنا…"],
+    ["Prova med en exempeltext", "جرّب نصاً تجريبياً"],
+    ["för att korrigera</span>", "للتصحيح</span>"],
+    ["0 ord · 0 / 5 000 tecken", "0 كلمة · 0 / 5000 حرف"],
+    ['<span class="label">Korrigera</span>', '<span class="label">صحّح النص</span>'],
+    [">Rensa</button>", ">مسح</button>"],
+    ["Din text sparas inte.", "نصك لا يُحفظ."],
+    [">Resultat</h2>", ">النتيجة</h2>"],
+    ['aria-label="Visa"', 'aria-label="عرض"'],
+    [">Korrigerad text</button>", ">النص المصحّح</button>"],
+    [">Ändringar</button>", ">التغييرات</button>"],
+    [">Kopiera</button>", ">نسخ</button>"],
+    ["<del>Överstruket</del> är borttaget, <ins>markerat</ins> är tillagt. Klicka på en ändring för att ångra den.",
+     "<del>المشطوب</del> محذوف، و<ins>المظلّل</ins> مُضاف. اضغط على أي تغيير للتراجع عنه."],
+    [">Vad ändrades?</h3>", ">ماذا تغيّر؟</h3>"],
+    ["<span>Förklaringar på</span>", "<span>الشرح بـ</span>"],
+    ['<option value="sv">Svenska</option>', '<option value="sv">السويدية</option>'],
+    ['<option value="sv-enkel">Enkel svenska</option>', '<option value="sv-enkel">سويدية مبسّطة</option>'],
+  ],
+};
+
+for (const lang of ["en", "ar"]) {
+  const raw = readFileSync(join(root, "content/lang", `${lang}.html`), "utf8");
+  const m = raw.match(/^<!--\s*([\s\S]*?)\s*-->\s*([\s\S]*)$/);
+  if (!m) throw new Error(`Saknar metadata i lang/${lang}.html`);
+  const L = JSON.parse(m[1]);
+  const body = m[2].trim();
+  const path = `/${lang}`;
+
+  let localTool = tool;
+  for (const [from, to] of TOOL_TEXTS[lang]) {
+    if (!localTool.includes(from)) throw new Error(`Hittar inte "${from}" i verktyget (${lang})`);
+    localTool = localTool.split(from).join(to);
+  }
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        name: L.h1,
+        url: SITE + path,
+        inLanguage: lang,
+        description: L.description,
+        applicationCategory: "UtilitiesApplication",
+        operatingSystem: "All",
+        isAccessibleForFree: true,
+        offers: { "@type": "Offer", price: "0", priceCurrency: "SEK" },
+        isPartOf: { "@id": `${SITE}/#site` },
+      },
+      {
+        "@type": "FAQPage",
+        inLanguage: lang,
+        mainEntity: L.faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
+      },
+    ],
+  };
+
+  const faq = L.faq
+    .map(([q, a]) => `      <details>\n        <summary>${esc(q)}</summary>\n        <p>${esc(a)}</p>\n      </details>`)
+    .join("\n");
+  const nav = L.navLinks
+    .map(([href, label, hl]) => `        <a href="${href}" hreflang="${hl}" lang="${hl}">${label}</a>`)
+    .join("\n");
+
+  const html = `<!doctype html>
+<html lang="${lang}" dir="${L.dir}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${esc(L.title)}</title>
+  <meta name="description" content="${esc(L.description)}">
+  <link rel="canonical" href="${SITE}${path}">
+  <link rel="alternate" hreflang="sv" href="${SITE}/">
+  <link rel="alternate" hreflang="en" href="${SITE}/en">
+  <link rel="alternate" hreflang="ar" href="${SITE}/ar">
+  <link rel="alternate" hreflang="x-default" href="${SITE}/">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f7f6f2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#161716" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="${L.ogLocale}">
+  <meta property="og:site_name" content="Mamosta">
+  <meta property="og:title" content="${esc(L.title)}">
+  <meta property="og:description" content="${esc(L.description)}">
+  <meta property="og:url" content="${SITE}${path}">
+  <meta property="og:image" content="${SITE}/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="${CSS}">
+  ${SPECULATION}
+  ${ANALYTICS}
+  <script type="application/ld+json">
+${JSON.stringify(jsonLd, null, 2)}
+  </script>
+  <script src="${JS}" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#text">${esc(L.skip)}</a>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="logo" href="${path}" aria-label="Mamosta">Mamosta</a>
+      <nav aria-label="${esc(L.nav)}">
+${nav}
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="intro">
+      <h1>${esc(L.h1)}</h1>
+      <p class="lead">${esc(L.lead)}</p>
+    </section>
+
+${localTool}
+
+    <section class="about">
+${body
+  .split("\n")
+  .map((l) => (l ? "      " + l : l))
+  .join("\n")}
+    </section>
+
+    <section class="faq" aria-labelledby="faq-title">
+      <h2 id="faq-title">${esc(L.faqTitle)}</h2>
+${faq}
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>${L.footer}</p>
+    </div>
+  </footer>
+</body>
+</html>
+`;
+  writeFileSync(join(root, "public", `${lang}.html`), html);
+}
+
 // Sitemap
 const urls = [
   "/",
@@ -332,7 +499,7 @@ ${urls.map((u) => `  <url>\n    <loc>${SITE}${u}</loc>\n    <lastmod>${today}</l
 );
 
 // Versionsnummer i de handskrivna sidorna
-for (const file of ["index.html", "integritet.html", "en.html", "ar.html"]) {
+for (const file of ["index.html", "integritet.html"]) {
   const path = join(root, "public", file);
   const html = readFileSync(path, "utf8")
     .replace(/href="\/styles\.css(\?v=\w+)?"/g, `href="${CSS}"`)
