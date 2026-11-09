@@ -91,6 +91,7 @@ Skriptet skriver `public/guider/*.html`, hubbsidan `/guider` och en ny `public/s
 - **En adress:** `mamosta.se` omdirigeras permanent till `www.mamosta.se` (next.config.mjs), så att Google bara ser en version av varje sida.
 - **Sökord:** startsidan är optimerad för *stavningskontroll* och *grammatikkontroll*, med en FAQ och strukturerad data (Organization, WebSite, WebApplication, FAQPage).
 - **Guider:** 17 språkguider i `content/guider/` – nya guider läggs till där och i `ORDER` i `scripts/build.mjs`.
+- **Engelska guider:** `/en/guides` och `/en/<slug>` för den som lär sig svenska. Texterna ligger i `content/en-guides/` (ordning i `EN_ORDER` i `scripts/build.mjs`); fältet `sv` kopplar en guide till sin svenska motsvarighet med `hreflang`.
 - **Användningssidor:** `/ratta/personligt-brev`, `/ratta/cv`, `/ratta/uppsats` och `/ratta/mejl` har rättningsverktyget inbyggt (formuläret kopieras från `public/index.html` vid bygget) och tips för just den texttypen. Texterna ligger i `content/ratta/`, ordningen i `USE_ORDER` i `scripts/build.mjs`.
 - **Andra språk:** `/en` (Swedish grammar checker) och `/ar` (arabiska) har rättningsverktyget inbyggt med översatt gränssnitt och förklaringar på sidans språk. Texterna ligger i `content/lang/`, verktygets översättningar i `TOOL_TEXTS` i `scripts/build.mjs` och gränssnittets JavaScript-texter i `TEXTS` i `public/app.js` (väljs efter `<html lang>`).
 - **AI-sök:** `public/llms.txt` genereras av `scripts/build.mjs`.

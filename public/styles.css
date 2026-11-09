@@ -505,6 +505,8 @@ select {
 }
 .prose .ex.ok::before { content: "✓"; content: "✓" / "Rätt:"; color: var(--ins-text); }
 .prose .ex.bad::before { content: "✗"; content: "✗" / "Fel:"; color: var(--del-text); }
+html[lang="en"] .prose .ex.ok::before { content: "✓"; content: "✓" / "Correct:"; }
+html[lang="en"] .prose .ex.bad::before { content: "✗"; content: "✗" / "Wrong:"; }
 .prose .ex.bad strong { text-decoration: line-through; text-decoration-color: var(--del-text); }
 .prose .note { color: var(--muted); font-size: var(--text-sm); }
 .prose details p { margin-top: var(--space-2); }

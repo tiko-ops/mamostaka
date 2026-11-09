@@ -7,6 +7,7 @@ const nextConfig = {
         { source: "/", destination: "/index.html" },
         { source: "/integritet", destination: "/integritet.html" },
         { source: "/en", destination: "/en.html" },
+        { source: "/en/:slug([a-z0-9-]+)", destination: "/en/:slug.html" },
         { source: "/ar", destination: "/ar.html" },
         { source: "/ratta/:slug([a-z0-9-]+)", destination: "/ratta/:slug.html" },
         { source: "/guider", destination: "/guider/index.html" },
