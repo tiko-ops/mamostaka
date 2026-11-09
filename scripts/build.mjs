@@ -65,6 +65,16 @@ const esc = (s) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const strip = (html) => html.replace(/<[^>]+>/g, "");
 
+// Engelska guider för den som lär sig svenska (/en/<slug>), med koppling till svensk motsvarighet
+const EN_ORDER = ["de-or-dem", "en-or-ett", "swedish-word-order", "swedish-compound-words"];
+const enGuides = EN_ORDER.map((slug) => {
+  const raw = readFileSync(join(root, "content/en-guides", `${slug}.html`), "utf8");
+  const m = raw.match(/^<!--\s*([\s\S]*?)\s*-->\s*([\s\S]*)$/);
+  if (!m) throw new Error(`Saknar metadata i en-guides/${slug}.html`);
+  return { slug, ...JSON.parse(m[1]), body: m[2].trim() };
+});
+const enFor = (svSlug) => enGuides.find((g) => g.sv === svSlug);
+
 const guides = ORDER.map((slug) => {
   const raw = readFileSync(join(root, "content/guider", `${slug}.html`), "utf8");
   const m = raw.match(/^<!--\s*([\s\S]*?)\s*-->\s*([\s\S]*)$/);
@@ -72,7 +82,7 @@ const guides = ORDER.map((slug) => {
   return { slug, ...JSON.parse(m[1]), body: m[2].trim() };
 });
 
-function page({ title, description, path, ogType = "article", jsonLd, main, mainClass = "wrap prose", script = "", skipTo = "#content" }) {
+function page({ title, description, path, ogType = "article", jsonLd, main, mainClass = "wrap prose", script = "", skipTo = "#content", alternates = [] }) {
   const url = SITE + path;
   return `<!doctype html>
 <html lang="sv">
@@ -81,7 +91,10 @@ function page({ title, description, path, ogType = "article", jsonLd, main, main
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>${esc(title)}</title>
   <meta name="description" content="${esc(description)}">
-  <link rel="canonical" href="${url}">
+  <link rel="canonical" href="${url}">${alternates
+    .map(([hl, href]) => `
+  <link rel="alternate" hreflang="${hl}" href="${SITE}${href}">`)
+    .join("")}
   <meta name="color-scheme" content="light dark">
   <meta name="theme-color" content="#f7f6f2" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#161716" media="(prefers-color-scheme: dark)">
@@ -174,10 +187,12 @@ ${others}
       </ul>
     </section>`;
 
+  const en = enFor(g.slug);
   const html = page({
     title: `${g.title} | Mamosta`,
     description: g.description,
     path,
+    alternates: en ? [["sv", path], ["en", `/en/${en.slug}`]] : [],
     jsonLd: {
       "@context": "https://schema.org",
       "@graph": [
@@ -479,11 +494,166 @@ ${faq}
   writeFileSync(join(root, "public", `${lang}.html`), html);
 }
 
+// Engelska guider och hubb
+function enPage({ title, description, path, jsonLd, main, alternates = [] }) {
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${esc(title)}</title>
+  <meta name="description" content="${esc(description)}">
+  <link rel="canonical" href="${SITE}${path}">${alternates
+    .map(([hl, href]) => `\n  <link rel="alternate" hreflang="${hl}" href="${SITE}${href}">`)
+    .join("")}
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f7f6f2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#161716" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="article">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:site_name" content="Mamosta">
+  <meta property="og:title" content="${esc(title)}">
+  <meta property="og:description" content="${esc(description)}">
+  <meta property="og:url" content="${SITE}${path}">
+  <meta property="og:image" content="${SITE}/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="${CSS}">
+  ${SPECULATION}
+  ${ANALYTICS}
+  <script type="application/ld+json">
+${JSON.stringify(jsonLd, null, 2)}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="logo" href="/en" aria-label="Mamosta, Swedish grammar checker">Mamosta</a>
+      <nav aria-label="Main menu">
+        <a href="/en">Check text</a>
+        <a href="/en/guides"${path.startsWith("/en/guides") ? ' aria-current="page"' : ""}>Guides</a>
+        <a href="/" hreflang="sv" lang="sv">Svenska</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="content" class="wrap prose">
+${main}
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>© Mamosta · <a href="/en">Swedish grammar checker</a> · <a href="/en/guides">Guides</a> · No cookies</p>
+    </div>
+  </footer>
+</body>
+</html>
+`;
+}
+
+const enCta = `
+    <aside class="cta">
+      <p><strong>Check your own Swedish text.</strong> Paste it into Mamosta and get spelling and grammar corrected – with every change explained in English. Free, no sign-up.</p>
+      <a class="btn btn-primary" href="/en">Check your Swedish text</a>
+    </aside>`;
+
+mkdirSync(join(root, "public/en"), { recursive: true });
+for (const g of enGuides) {
+  const path = `/en/${g.slug}`;
+  const others = enGuides
+    .filter((o) => o.slug !== g.slug)
+    .map((o) => `        <li><a href="/en/${o.slug}">${esc(o.h1)}</a></li>`)
+    .join("\n");
+  const main = `    <nav class="crumbs" aria-label="Breadcrumbs"><a href="/en">Mamosta</a> <span aria-hidden="true">/</span> <a href="/en/guides">Guides</a></nav>
+    <article>
+      <h1>${esc(g.h1)}</h1>
+      <div class="answer">
+        <p class="answer-label">Short answer</p>
+        <p>${g.short}</p>
+      </div>
+${g.body
+  .split("\n")
+  .map((l) => (l ? "      " + l : l))
+  .join("\n")}
+    </article>
+${enCta}
+    <section class="more" aria-labelledby="more-title">
+      <h2 id="more-title">More guides</h2>
+      <ul>
+${others}
+      </ul>
+    </section>`;
+  writeFileSync(
+    join(root, "public/en", `${g.slug}.html`),
+    enPage({
+      title: `${g.title} | Mamosta`,
+      description: g.description,
+      path,
+      alternates: g.sv ? [["en", path], ["sv", `/guider/${g.sv}`]] : [],
+      jsonLd: {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Article",
+            headline: g.title,
+            description: g.description,
+            inLanguage: "en",
+            url: SITE + path,
+            dateModified: today,
+            author: { "@type": "Organization", name: "Mamosta", url: SITE + "/en" },
+            publisher: { "@type": "Organization", name: "Mamosta", url: SITE + "/" },
+          },
+          breadcrumb([["Mamosta", "/en"], ["Guides", "/en/guides"], [g.h1, path]]),
+        ],
+      },
+      main,
+    })
+  );
+}
+
+const enCards = enGuides
+  .map((g) => `      <li>\n        <a href="/en/${g.slug}">${esc(g.h1)}</a>\n        <p>${esc(strip(g.short))}</p>\n      </li>`)
+  .join("\n");
+writeFileSync(
+  join(root, "public/en/guides.html"),
+  enPage({
+    title: "Common Swedish grammar mistakes – guides for learners | Mamosta",
+    description:
+      "Short English guides to the most common Swedish grammar mistakes: de or dem, en or ett, word order and compound words. With tricks, examples and exercises.",
+    path: "/en/guides",
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "CollectionPage",
+          name: "Common Swedish grammar mistakes",
+          inLanguage: "en",
+          url: SITE + "/en/guides",
+          hasPart: enGuides.map((g) => ({ "@type": "Article", headline: g.title, url: `${SITE}/en/${g.slug}` })),
+        },
+        breadcrumb([["Mamosta", "/en"], ["Guides", "/en/guides"]]),
+      ],
+    },
+    main: `    <h1>Common Swedish grammar mistakes</h1>
+    <p class="lead">Short guides in English for people learning Swedish – with simple rules, tricks that are easy to remember, and exercises.</p>
+    <ul class="guide-list">
+${enCards}
+    </ul>
+    <p>More guides in Swedish: <a href="/guider" hreflang="sv" lang="sv">Språkguider</a>.</p>
+${enCta}`,
+  })
+);
+
 // Sitemap
 const urls = [
   "/",
   ...useCases.map((u) => `/ratta/${u.slug}`),
   "/en",
+  "/en/guides",
+  ...enGuides.map((g) => `/en/${g.slug}`),
   "/ar",
   "/guider",
   ...guides.map((g) => `/guider/${g.slug}`),
@@ -523,6 +693,10 @@ writeFileSync(
 ## Rätta en viss sorts text
 
 ${useCases.map((u) => `- [${u.name}](${SITE}/ratta/${u.slug}): ${u.description}`).join("\n")}
+
+## Guides in English (for learners of Swedish)
+
+${enGuides.map((g) => `- [${g.h1}](${SITE}/en/${g.slug}): ${g.description}`).join("\n")}
 
 ## Språkguider
 

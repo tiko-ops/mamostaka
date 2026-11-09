@@ -15,6 +15,13 @@
 - [Korrekturläs uppsats](https://www.mamosta.se/ratta/uppsats): Korrekturläs uppsatser, rapporter och skolarbeten gratis. Rätta stavning, grammatik och komma – och se förklaringen till varje ändring.
 - [Rätta mejl](https://www.mamosta.se/ratta/mejl): Skicka mejl utan stavfel. Rätta stavning, grammatik och kommatering i ditt mejl gratis på några sekunder – med förklaring till varje ändring.
 
+## Guides in English (for learners of Swedish)
+
+- [De or dem in Swedish?](https://www.mamosta.se/en/de-or-dem): When do you write de and when dem in Swedish? De means they, dem means them. Learn the rule, the exceptions and a quick trick – with examples and exercises.
+- [En or ett in Swedish?](https://www.mamosta.se/en/en-or-ett): En or ett? Most Swedish nouns are en-words. Learn the endings that help you choose, how adjectives change after ett, and how to remember the article.
+- [Swedish word order](https://www.mamosta.se/en/swedish-word-order): Swedish word order made simple: the verb comes second in main clauses (V2), and inte goes before the verb in subordinate clauses. Examples and exercises.
+- [Compound words in Swedish](https://www.mamosta.se/en/swedish-compound-words): Swedish compound words are written as one word: sjuksköterska, datorskärm. Writing them apart (särskrivning) can change the meaning. Rules and examples.
+
 ## Språkguider
 
 - [De eller dem?](https://www.mamosta.se/guider/de-eller-dem): De eller dem? Lär dig regeln på en minut med enkla knep och exempel – och slipp ett av de vanligaste felen i svenska.
