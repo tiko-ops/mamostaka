@@ -232,6 +232,7 @@ writeFileSync(
       "Korta guider om de vanligaste felen i svenska: de eller dem, särskrivning, komma, och eller att, var eller vart och mer. Med knep och övningar.",
     path: "/guider",
     ogType: "website",
+    alternates: [["sv", "/guider"], ["en", "/en/guides"]],
     jsonLd: {
       "@context": "https://schema.org",
       "@graph": [
@@ -277,12 +278,17 @@ for (const u of useCases) {
     .filter((o) => o.slug !== u.slug)
     .map((o) => `        <li><a href="/ratta/${o.slug}">${esc(o.name)}</a></li>`)
     .join("\n");
+  const exampleBtn = '<button id="example" type="button" class="link-btn">';
+  if (!tool.includes(exampleBtn)) throw new Error("Hittar inte exempelknappen i verktyget");
+  const localTool = u.example
+    ? tool.replace(exampleBtn, `<button id="example" type="button" class="link-btn" data-example="${esc(u.example)}">`)
+    : tool;
   const main = `    <section class="intro">
       <h1>${esc(u.h1)}</h1>
       <p class="lead">${esc(u.lead)}</p>
     </section>
 
-${tool}
+${localTool}
 
     <article class="prose usecase">
 ${u.body
@@ -624,6 +630,7 @@ writeFileSync(
     description:
       "Short English guides to the most common Swedish grammar mistakes: de or dem, en or ett, word order and compound words. With tricks, examples and exercises.",
     path: "/en/guides",
+    alternates: [["en", "/en/guides"], ["sv", "/guider"]],
     jsonLd: {
       "@context": "https://schema.org",
       "@graph": [
