@@ -16,16 +16,169 @@
   const EXAMPLE =
     "Hej! Igår var jag och min kompis på bio men filmen var tråkig så vi gick hem innan den var slut. Dem som satt bredvid oss pratade hela tiden. Nästa gång ska jag försöka och se en action film på Lördag istället, det blir säkert bättre en förra gången.";
 
-  // Kategorier i "Vad ändrades?" (samma nycklar som API:t använder)
-  const CATEGORIES = {
-    stavning: "Stavning",
-    grammatik: "Grammatik",
-    sarskrivning: "Särskrivning",
-    skiljetecken: "Skiljetecken",
-    versaler: "Stor/liten bokstav",
-    ordval: "Ordval",
-    stil: "Stil",
+  // Gränssnittets texter på sidans språk (<html lang="sv|en|ar">). Texten som rättas är alltid svensk.
+  const PAGE_LANG = ["en", "ar"].includes(document.documentElement.lang) ? document.documentElement.lang : "sv";
+  const TEXTS = {
+    sv: {
+      locale: "sv-SE",
+      counter: (w, n, max) => `${w} ord · ${n} / ${max} tecken`,
+      tooLong: (max) => `Texten är för lång – max ${max} tecken. Korta ner den och försök igen.`,
+      checkText: "Kontrollera texten och försök igen.",
+      busy: "Många använder tjänsten just nu. Vänta en stund och försök igen.",
+      timeout: "Det tog för lång tid att rätta texten. Försök igen.",
+      serverError: "Något gick fel hos oss. Försök igen om en stund.",
+      empty: "Skriv eller klistra in en text först.",
+      correcting: "Korrigerar…",
+      correct: "Korrigera",
+      correctingStatus: "Korrigerar texten…",
+      aborted: "Rättningen avbröts. Försök igen.",
+      offline: "Du verkar vara offline. Kontrollera anslutningen och försök igen.",
+      unreachable: "Kunde inte nå servern. Försök igen om en stund.",
+      done: (s) => `Klart. ${s}`,
+      rewritten: "Texten har skrivits om mycket.",
+      noErrors: "Inga fel hittades – texten ser bra ut.",
+      changes: (n, f) => (n === 1 ? "1 ändring" : `${f} ändringar`),
+      undone: (n, f) => ` · ${f} ångrad${n === 1 ? "" : "e"}`,
+      undoneTitle: "Ångrad – klicka för att använda rättningen igen",
+      undoTitle: "Klicka för att ångra ändringen",
+      changeUndone: (s) => `Ändringen är ångrad. ${s}`,
+      changeRestored: (s) => `Ändringen används igen. ${s}`,
+      linebreak: "(radbrytning)",
+      space: "(mellanslag)",
+      added: "Lagt till ",
+      removed: "Tagit bort ",
+      readMore: "Läs mer: ",
+      useFix: "Använd rättningen",
+      undo: "Ångra",
+      undoChange: "Ångra ändringen",
+      to: "till",
+      loading: "Hämtar förklaring…",
+      explainFail: "Förklaringarna kunde inte hämtas just nu. Rättningarna fungerar ändå.",
+      rest: (f) => `Ytterligare ${f} ändringar syns i texten ovan men förklaras inte.`,
+      copied: "Kopierat!",
+      copyFail: "Kunde inte kopiera",
+      copy: "Kopiera",
+      copiedStatus: "Den korrigerade texten är kopierad.",
+      copyFailStatus: "Kunde inte kopiera. Markera texten och kopiera den själv.",
+      cleared: "Texten är rensad.",
+      categories: {
+        stavning: "Stavning",
+        grammatik: "Grammatik",
+        sarskrivning: "Särskrivning",
+        skiljetecken: "Skiljetecken",
+        versaler: "Stor/liten bokstav",
+        ordval: "Ordval",
+        stil: "Stil",
+      },
+    },
+    en: {
+      locale: "en-GB",
+      counter: (w, n, max) => `${w} words · ${n} / ${max} characters`,
+      tooLong: (max) => `The text is too long – max ${max} characters. Shorten it and try again.`,
+      checkText: "Please check the text and try again.",
+      busy: "Lots of people are using the service right now. Please wait a moment and try again.",
+      timeout: "Checking the text took too long. Please try again.",
+      serverError: "Something went wrong on our side. Please try again in a moment.",
+      empty: "Write or paste a Swedish text first.",
+      correcting: "Checking…",
+      correct: "Check text",
+      correctingStatus: "Checking the text…",
+      aborted: "The check was interrupted. Please try again.",
+      offline: "You seem to be offline. Check your connection and try again.",
+      unreachable: "Could not reach the server. Please try again in a moment.",
+      done: (s) => `Done. ${s}`,
+      rewritten: "The text was heavily rewritten.",
+      noErrors: "No mistakes found – the text looks good.",
+      changes: (n, f) => (n === 1 ? "1 change" : `${f} changes`),
+      undone: (n, f) => ` · ${f} undone`,
+      undoneTitle: "Undone – click to use the correction again",
+      undoTitle: "Click to undo this change",
+      changeUndone: (s) => `Change undone. ${s}`,
+      changeRestored: (s) => `Change restored. ${s}`,
+      linebreak: "(line break)",
+      space: "(space)",
+      added: "Added ",
+      removed: "Removed ",
+      readMore: "Guide (in Swedish): ",
+      useFix: "Use the correction",
+      undo: "Undo",
+      undoChange: "Undo the change",
+      to: "to",
+      loading: "Loading explanation…",
+      explainFail: "The explanations could not be loaded right now. The corrections still work.",
+      rest: (f) => `${f} more changes are shown in the text above but not explained.`,
+      copied: "Copied!",
+      copyFail: "Could not copy",
+      copy: "Copy",
+      copiedStatus: "The corrected text has been copied.",
+      copyFailStatus: "Could not copy. Select the text and copy it yourself.",
+      cleared: "The text has been cleared.",
+      categories: {
+        stavning: "Spelling",
+        grammatik: "Grammar",
+        sarskrivning: "Compound word",
+        skiljetecken: "Punctuation",
+        versaler: "Capital letters",
+        ordval: "Word choice",
+        stil: "Style",
+      },
+    },
+    ar: {
+      locale: "ar-u-nu-latn",
+      counter: (w, n, max) => `${w} كلمة · ${n} / ${max} حرف`,
+      tooLong: (max) => `النص طويل جداً – الحد الأقصى ${max} حرف. اختصره وحاول مرة أخرى.`,
+      checkText: "تحقّق من النص وحاول مرة أخرى.",
+      busy: "الخدمة مشغولة الآن. انتظر قليلاً وحاول مرة أخرى.",
+      timeout: "استغرق التصحيح وقتاً طويلاً. حاول مرة أخرى.",
+      serverError: "حدث خطأ لدينا. حاول مرة أخرى بعد قليل.",
+      empty: "اكتب نصاً سويدياً أو الصقه أولاً.",
+      correcting: "جارٍ التصحيح…",
+      correct: "صحّح النص",
+      correctingStatus: "جارٍ تصحيح النص…",
+      aborted: "توقّف التصحيح. حاول مرة أخرى.",
+      offline: "يبدو أنك غير متصل بالإنترنت. تحقّق من الاتصال وحاول مرة أخرى.",
+      unreachable: "تعذّر الوصول إلى الخادم. حاول مرة أخرى بعد قليل.",
+      done: (s) => `تم. ${s}`,
+      rewritten: "أُعيدت كتابة النص بشكل كبير.",
+      noErrors: "لم نجد أخطاء – النص يبدو جيداً.",
+      changes: (n, f) => (n === 1 ? "تغيير واحد" : `عدد التغييرات: ${f}`),
+      undone: (n, f) => ` · تم التراجع عن ${f}`,
+      undoneTitle: "تم التراجع – اضغط لاستخدام التصحيح مرة أخرى",
+      undoTitle: "اضغط للتراجع عن هذا التغيير",
+      changeUndone: (s) => `تم التراجع عن التغيير. ${s}`,
+      changeRestored: (s) => `عاد التغيير. ${s}`,
+      linebreak: "(سطر جديد)",
+      space: "(مسافة)",
+      added: "أُضيف ",
+      removed: "حُذف ",
+      readMore: "دليل (بالسويدية): ",
+      useFix: "استخدم التصحيح",
+      undo: "تراجع",
+      undoChange: "تراجع عن التغيير",
+      to: "إلى",
+      loading: "جارٍ تحميل الشرح…",
+      explainFail: "تعذّر تحميل الشرح الآن. التصحيحات تعمل مع ذلك.",
+      rest: (f) => `${f} تغييرات أخرى ظاهرة في النص أعلاه لكن دون شرح.`,
+      copied: "تم النسخ!",
+      copyFail: "تعذّر النسخ",
+      copy: "نسخ",
+      copiedStatus: "تم نسخ النص المصحّح.",
+      copyFailStatus: "تعذّر النسخ. حدّد النص وانسخه بنفسك.",
+      cleared: "تم مسح النص.",
+      categories: {
+        stavning: "إملاء",
+        grammatik: "قواعد",
+        sarskrivning: "كلمة مركّبة",
+        skiljetecken: "ترقيم",
+        versaler: "حروف كبيرة/صغيرة",
+        ordval: "اختيار الكلمات",
+        stil: "أسلوب",
+      },
+    },
   };
+  const T = TEXTS[PAGE_LANG];
+  // Kategorier i "Vad ändrades?" (samma nycklar som API:t använder)
+  const CATEGORIES = T.categories;
 
   const RTL = new Set(["ar", "ckb"]);
   const ARABIC_SCRIPT = /[\u0600-\u06FF]/;
@@ -54,7 +207,7 @@
   const langSelect = $("lang");
   const viewBtns = document.querySelectorAll("[data-view]");
 
-  const nf = new Intl.NumberFormat("sv-SE");
+  const nf = new Intl.NumberFormat(T.locale);
 
   // Anonym användningsstatistik (Vercel Web Analytics, utan cookies).
   // Skickar bara händelsens namn och grova kategorier – aldrig någon text.
@@ -83,6 +236,7 @@
   try {
     const saved = localStorage.getItem(LANG_KEY);
     if (saved && langSelect.querySelector(`option[value="${saved}"]`)) langSelect.value = saved;
+    else if (PAGE_LANG !== "sv") langSelect.value = PAGE_LANG;
   } catch {}
 
   // Länkar från /en och /ar (?lang=en, ?lang=ar) väljer förklaringsspråk direkt
@@ -100,7 +254,7 @@
     const n = input.value.length;
     const over = n > MAX;
     const words = (input.value.match(/\S+/g) || []).length;
-    counter.textContent = `${nf.format(words)} ord · ${nf.format(n)} / ${nf.format(MAX)} tecken`;
+    counter.textContent = T.counter(nf.format(words), nf.format(n), nf.format(MAX));
     exampleBtn.hidden = n > 0;
     hint.hidden = n === 0;
     counter.classList.toggle("over", over);
@@ -114,7 +268,7 @@
   }
 
   function tooLongMessage() {
-    return `Texten är för lång – max ${nf.format(MAX)} tecken. Korta ner den och försök igen.`;
+    return T.tooLong(nf.format(MAX));
   }
 
   // ---------- Fel ----------
@@ -132,10 +286,12 @@
   }
 
   function friendlyError(status, serverMessage) {
-    if (status === 400) return serverMessage || "Kontrollera texten och försök igen.";
-    if (status === 429) return serverMessage || "Många använder tjänsten just nu. Vänta en stund och försök igen.";
-    if (status === 504) return "Det tog för lång tid att rätta texten. Försök igen.";
-    return "Något gick fel hos oss. Försök igen om en stund.";
+    // API:ts egna meddelanden är på svenska – använd dem bara på svenska sidor
+    if (PAGE_LANG !== "sv") serverMessage = null;
+    if (status === 400) return serverMessage || T.checkText;
+    if (status === 429) return serverMessage || T.busy;
+    if (status === 504) return T.timeout;
+    return T.serverError;
   }
 
   class FriendlyError extends Error {
@@ -151,7 +307,7 @@
     loading = on;
     submitBtn.classList.toggle("is-loading", on);
     submitBtn.setAttribute("aria-disabled", String(on));
-    submitLabel.textContent = on ? "Korrigerar…" : "Korrigera";
+    submitLabel.textContent = on ? T.correcting : T.correct;
     output.setAttribute("aria-busy", String(on));
     copyBtn.disabled = on;
     viewBtns.forEach((b) => (b.disabled = on));
@@ -164,7 +320,7 @@
     const text = input.value;
 
     if (!text.trim()) {
-      showError("Skriv eller klistra in en text först.", "empty");
+      showError(T.empty, "empty");
       track("Fel", { typ: "tom text" });
       input.focus();
       return;
@@ -177,7 +333,7 @@
     }
 
     hideError();
-    track("Korrigera", { langd: lengthBucket(text.length) });
+    track("Korrigera", { langd: lengthBucket(text.length), sida: PAGE_LANG });
     if (explainController) explainController.abort();
     controller = new AbortController();
     const ac = controller;
@@ -190,12 +346,12 @@
     reasonsByLang = {};
     apiCategories = [];
     output.textContent = "";
-    summary.textContent = "Korrigerar…";
+    summary.textContent = T.correcting;
     legend.hidden = true;
     changesSection.hidden = true;
     result.hidden = false;
     setLoading(true);
-    statusEl.textContent = "Korrigerar texten…";
+    statusEl.textContent = T.correctingStatus;
     if (result.getBoundingClientRect().top > window.innerHeight) {
       result.scrollIntoView({ block: "start" });
     }
@@ -225,7 +381,7 @@
       corrected += decoder.decode();
 
       if (corrected.includes(STREAM_ERROR)) {
-        throw new FriendlyError("Rättningen avbröts. Försök igen.", "ström");
+        throw new FriendlyError(T.aborted, "ström");
       }
       if (!corrected.trim()) throw new FriendlyError(friendlyError(500));
 
@@ -237,16 +393,16 @@
       let message;
       let kind;
       if (ac.signal.reason === "timeout") {
-        message = "Det tog för lång tid att rätta texten. Försök igen.";
+        message = T.timeout;
         kind = "timeout";
       } else if (err instanceof FriendlyError) {
         message = err.message;
         kind = err.kind;
       } else if (!navigator.onLine) {
-        message = "Du verkar vara offline. Kontrollera anslutningen och försök igen.";
+        message = T.offline;
         kind = "offline";
       } else {
-        message = "Kunde inte nå servern. Försök igen om en stund.";
+        message = T.unreachable;
         kind = "nätverk";
       }
       track("Fel", { typ: kind });
@@ -286,23 +442,23 @@
       if (listed.length) loadReasons();
     }
 
-    statusEl.textContent = `Klart. ${summary.textContent}`;
+    statusEl.textContent = T.done(summary.textContent);
     resultTitle.focus();
   }
 
   function updateSummary() {
     if (!chunks) {
-      summary.textContent = "Texten har skrivits om mycket.";
+      summary.textContent = T.rewritten;
       return;
     }
     const changes = chunks.filter(isChange);
     const undone = changes.filter((c) => c.rejected).length;
     if (changes.length === 0) {
-      summary.textContent = "Inga fel hittades – texten ser bra ut.";
+      summary.textContent = T.noErrors;
       return;
     }
-    let text = changes.length === 1 ? "1 ändring" : `${nf.format(changes.length)} ändringar`;
-    if (undone) text += ` · ${nf.format(undone)} ångrad${undone === 1 ? "" : "e"}`;
+    let text = T.changes(changes.length, nf.format(changes.length));
+    if (undone) text += T.undone(undone, nf.format(undone));
     summary.textContent = text;
   }
 
@@ -342,9 +498,9 @@
       if (c.rejected) {
         span.classList.add("rejected");
         span.textContent = c.del;
-        span.title = "Ångrad – klicka för att använda rättningen igen";
+        span.title = T.undoneTitle;
       } else {
-        span.title = "Klicka för att ångra ändringen";
+        span.title = T.undoTitle;
         if (c.del) {
           const el = document.createElement("del");
           el.textContent = c.del;
@@ -372,13 +528,22 @@
     const li = changeList.querySelector(`[data-i="${i}"]`);
     if (li) updateListItem(li, c);
     statusEl.textContent = c.rejected
-      ? `Ändringen är ångrad. ${summary.textContent}`
-      : `Ändringen används igen. ${summary.textContent}`;
+      ? T.changeUndone(summary.textContent)
+      : T.changeRestored(summary.textContent);
   }
 
   // ---------- Vad ändrades? ----------
 
-  const shown = (s) => (s.trim() ? s.trim() : s.includes("\n") ? "(radbrytning)" : "(mellanslag)");
+  // Svenska ord och pilar visas alltid vänster–höger, även på den arabiska sidan
+  function ltr(...parts) {
+    const el = document.createElement("bdi");
+    el.dir = "ltr";
+    el.lang = "sv";
+    el.append(...parts);
+    return el;
+  }
+
+  const shown = (s) => (s.trim() ? s.trim() : s.includes("\n") ? T.linebreak : T.space);
 
   function renderChangeList() {
     changeList.textContent = "";
@@ -398,15 +563,15 @@
         d.textContent = shown(c.del);
         const n = document.createElement("ins");
         n.textContent = shown(c.ins);
-        pair.append(d, " → ", n);
+        pair.append(ltr(d, " → ", n));
       } else if (c.ins) {
         const n = document.createElement("ins");
         n.textContent = shown(c.ins);
-        pair.append("Lagt till ", n);
+        pair.append(T.added, n);
       } else {
         const d = document.createElement("del");
         d.textContent = shown(c.del);
-        pair.append("Tagit bort ", d);
+        pair.append(T.removed, d);
       }
 
       const cat = document.createElement("span");
@@ -429,7 +594,7 @@
       if (guide) {
         const a = document.createElement("a");
         a.href = `/guider/${guide.slug}`;
-        a.textContent = `Läs mer: ${guide.name}`;
+        a.append(T.readMore, ltr(guide.name));
         a.addEventListener("click", () => track("Guide från förklaring", { guide: guide.slug }));
         actions.append(a);
       }
@@ -495,15 +660,15 @@
     const rest = listed.length - MAX_EXPLAIN;
     changesNote.hidden = rest <= 0;
     changesNote.textContent =
-      rest > 0 ? `Ytterligare ${nf.format(rest)} ändringar syns i texten ovan men förklaras inte.` : "";
+      rest > 0 ? T.rest(nf.format(rest)) : "";
   }
 
   function updateListItem(li, c) {
     li.classList.toggle("rejected", Boolean(c.rejected));
     const btn = li.querySelector(".link-btn");
-    const label = c.del && c.ins ? `${shown(c.del)} till ${shown(c.ins)}` : shown(c.del || c.ins);
-    btn.textContent = c.rejected ? "Använd rättningen" : "Ångra";
-    btn.setAttribute("aria-label", `${c.rejected ? "Använd rättningen" : "Ångra ändringen"} ${label}`);
+    const label = c.del && c.ins ? `${shown(c.del)} ${T.to} ${shown(c.ins)}` : shown(c.del || c.ins);
+    btn.textContent = c.rejected ? T.useFix : T.undo;
+    btn.setAttribute("aria-label", `${c.rejected ? T.useFix : T.undoChange} ${label}`);
   }
 
   function showReasons(state) {
@@ -520,7 +685,7 @@
         p.lang = lang === "sv-enkel" ? "sv" : lang;
         if (RTL.has(lang) && ARABIC_SCRIPT.test(reasons[n])) p.dir = "rtl";
       } else if (state === "loading") {
-        p.textContent = "Hämtar förklaring…";
+        p.textContent = T.loading;
         p.classList.add("muted");
       } else {
         p.textContent = "";
@@ -528,7 +693,7 @@
     });
     if (state === "error") {
       changesNote.hidden = false;
-      changesNote.textContent = "Förklaringarna kunde inte hämtas just nu. Rättningarna fungerar ändå.";
+      changesNote.textContent = T.explainFail;
     }
   }
 
@@ -796,13 +961,13 @@
     }
 
     if (ok) track("Kopiera");
-    const message = ok ? "Kopierat!" : "Kunde inte kopiera";
+    const message = ok ? T.copied : T.copyFail;
     copyBtn.textContent = message;
     statusEl.textContent = ok
-      ? "Den korrigerade texten är kopierad."
-      : "Kunde inte kopiera. Markera texten och kopiera den själv.";
+      ? T.copiedStatus
+      : T.copyFailStatus;
     clearTimeout(copy.timer);
-    copy.timer = setTimeout(() => (copyBtn.textContent = "Kopiera"), 2500);
+    copy.timer = setTimeout(() => (copyBtn.textContent = T.copy), 2500);
   }
 
   function legacyCopy(text) {
@@ -840,7 +1005,7 @@
     result.hidden = true;
     hideError();
     updateCounter();
-    statusEl.textContent = "Texten är rensad.";
+    statusEl.textContent = T.cleared;
     input.focus();
   }
 
