@@ -495,19 +495,21 @@ select {
 }
 .prose .ex {
   margin: var(--space-2) 0;
-  padding-left: 1.75rem;
+  padding-inline-start: 1.75rem;
   position: relative;
   color: var(--text);
 }
 .prose .ex::before {
   position: absolute;
-  left: 0;
+  inset-inline-start: 0;
   font-weight: 700;
 }
 .prose .ex.ok::before { content: "✓"; content: "✓" / "Rätt:"; color: var(--ins-text); }
 .prose .ex.bad::before { content: "✗"; content: "✗" / "Fel:"; color: var(--del-text); }
 html[lang="en"] .prose .ex.ok::before { content: "✓"; content: "✓" / "Correct:"; }
 html[lang="en"] .prose .ex.bad::before { content: "✗"; content: "✗" / "Wrong:"; }
+html[lang="ar"] .prose .ex.ok::before { content: "✓"; content: "✓" / "صحيح:"; }
+html[lang="ar"] .prose .ex.bad::before { content: "✗"; content: "✗" / "خطأ:"; }
 .prose .ex.bad strong { text-decoration: line-through; text-decoration-color: var(--del-text); }
 .prose .note { color: var(--muted); font-size: var(--text-sm); }
 .prose details p { margin-top: var(--space-2); }
