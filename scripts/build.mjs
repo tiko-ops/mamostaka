@@ -47,12 +47,18 @@ const ORDER = [
   "komma",
   "och-eller-att",
   "var-eller-vart",
+  "hem-eller-hemma",
+  "ligga-eller-lagga",
+  "i-eller-pa",
+  "fler-eller-mer",
+  "nagon-nagot-nagra",
   "sin-eller-hans",
   "stor-eller-liten-bokstav",
   "ihop-eller-isar",
   "enda-eller-anda",
   "an-eller-en",
   "sen-eller-sedan",
+  "ska-eller-skall",
   "mig-eller-mej",
   "forkortningar",
   "siffror-och-datum",
@@ -66,7 +72,17 @@ const esc = (s) =>
 const strip = (html) => html.replace(/<[^>]+>/g, "");
 
 // Engelska guider för den som lär sig svenska (/en/<slug>), med koppling till svensk motsvarighet
-const EN_ORDER = ["de-or-dem", "en-or-ett", "swedish-word-order", "swedish-compound-words"];
+const EN_ORDER = [
+  "de-or-dem",
+  "en-or-ett",
+  "swedish-word-order",
+  "var-or-vart",
+  "hem-or-hemma",
+  "ligga-or-lagga",
+  "i-or-pa",
+  "sen-or-sedan",
+  "swedish-compound-words",
+];
 const enGuides = EN_ORDER.map((slug) => {
   const raw = readFileSync(join(root, "content/en-guides", `${slug}.html`), "utf8");
   const m = raw.match(/^<!--\s*([\s\S]*?)\s*-->\s*([\s\S]*)$/);
@@ -229,7 +245,7 @@ writeFileSync(
   page({
     title: "Språkguider – vanliga fel i svenska | Mamosta",
     description:
-      "Korta guider om de vanligaste felen i svenska: de eller dem, särskrivning, komma, och eller att, var eller vart och mer. Med knep och övningar.",
+      "Korta guider om de vanligaste felen i svenska: de eller dem, särskrivning, komma, och eller att, var eller vart, i eller på, ligga eller lägga och mer. Med knep och övningar.",
     path: "/guider",
     ogType: "website",
     alternates: [["sv", "/guider"], ["en", "/en/guides"]],
@@ -628,7 +644,7 @@ writeFileSync(
   enPage({
     title: "Common Swedish grammar mistakes – guides for learners | Mamosta",
     description:
-      "Short English guides to the most common Swedish grammar mistakes: de or dem, en or ett, word order and compound words. With tricks, examples and exercises.",
+      "Short English guides to the most common Swedish grammar mistakes: de or dem, en or ett, word order, var or vart, i or på, ligga or lägga and more. With tricks, examples and exercises.",
     path: "/en/guides",
     alternates: [["en", "/en/guides"], ["sv", "/guider"]],
     jsonLd: {
