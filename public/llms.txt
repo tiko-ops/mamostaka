@@ -27,6 +27,15 @@
 - [Sen or sedan in Swedish?](https://www.mamosta.se/en/sen-or-sedan): Sen or sedan? Sedan means then or since and works in all texts. Sen is the informal short form – and also an adjective meaning late. Examples and exercises.
 - [Compound words in Swedish](https://www.mamosta.se/en/swedish-compound-words): Swedish compound words are written as one word: sjuksköterska, datorskärm. Writing them apart (särskrivning) can change the meaning. Rules and examples.
 
+## أدلة بالعربية (guider på arabiska)
+
+- [de أو dem في السويدية؟](https://www.mamosta.se/ar/de-or-dem): متى تكتب de ومتى تكتب dem في السويدية؟ de تعني «هم» (الفاعل)، و dem تعني «هم» بعد الفعل أو حرف الجر (المفعول به). القاعدة مع حيلة سهلة وأمثلة وتمارين.
+- [en أو ett في السويدية؟](https://www.mamosta.se/ar/en-or-ett): en أو ett؟ كل اسم في السويدية إما من نوع en أو من نوع ett، ويؤثّر ذلك في الصفة وأداة التعريف. تعلّم القاعدة ونصائح للتذكّر مع أمثلة وتمارين.
+- [ترتيب الكلمات في السويدية](https://www.mamosta.se/ar/swedish-word-order): ترتيب الكلمات في السويدية ببساطة: الفعل يأتي دائماً في المكان الثاني في الجملة الرئيسية، و inte تأتي قبل الفعل في الجملة الفرعية. أمثلة وتمارين.
+- [var أو vart في السويدية؟](https://www.mamosta.se/ar/var-or-vart): var أو vart؟ var تعني «أين» (المكان)، و vart تعني «إلى أين» (الاتجاه). تعلّم الفرق بحيلة بسيطة مع أمثلة وتمارين.
+- [i أو på في السويدية؟](https://www.mamosta.se/ar/i-or-pa): i أو på؟ نقول i Sverige لكن på Gotland، و i maj لكن på måndag. تعلّم أهم القواعد لاستخدام حرفي الجر i و på في السويدية مع أمثلة وتمارين.
+- [ligga أو lägga في السويدية؟](https://www.mamosta.se/ar/ligga-or-lagga): ligga أو lägga، sitta أو sätta، stå أو ställa؟ فعل يصف الوضع، وفعل يعني أن تضع الشيء في هذا الوضع. القاعدة وتصريف الأفعال وتمارين.
+
 ## Språkguider
 
 - [De eller dem?](https://www.mamosta.se/guider/de-eller-dem): De eller dem? Lär dig regeln på en minut med enkla knep och exempel – och slipp ett av de vanligaste felen i svenska.
