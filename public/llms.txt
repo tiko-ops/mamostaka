@@ -20,6 +20,11 @@
 - [De or dem in Swedish?](https://www.mamosta.se/en/de-or-dem): When do you write de and when dem in Swedish? De means they, dem means them. Learn the rule, the exceptions and a quick trick – with examples and exercises.
 - [En or ett in Swedish?](https://www.mamosta.se/en/en-or-ett): En or ett? Most Swedish nouns are en-words. Learn the endings that help you choose, how adjectives change after ett, and how to remember the article.
 - [Swedish word order](https://www.mamosta.se/en/swedish-word-order): Swedish word order made simple: the verb comes second in main clauses (V2), and inte goes before the verb in subordinate clauses. Examples and exercises.
+- [Var or vart in Swedish?](https://www.mamosta.se/en/var-or-vart): Var or vart? Var asks where something is, vart asks where something is going. Learn the difference with a simple trick, examples and exercises.
+- [Hem or hemma in Swedish?](https://www.mamosta.se/en/hem-or-hemma): Hem or hemma, hit or här, dit or där? Swedish has different words for direction and location. Learn the pattern with examples and exercises.
+- [Ligga or lägga in Swedish?](https://www.mamosta.se/en/ligga-or-lagga): Ligga or lägga, sitta or sätta, stå or ställa? One verb describes a position, the other means putting something there. Rule, verb forms and exercises.
+- [I or på in Swedish?](https://www.mamosta.se/en/i-or-pa): I or på? i Sverige but på Gotland, i skolan but på jobbet, i maj but på måndag. Learn the most useful patterns for Swedish prepositions, with exercises.
+- [Sen or sedan in Swedish?](https://www.mamosta.se/en/sen-or-sedan): Sen or sedan? Sedan means then or since and works in all texts. Sen is the informal short form – and also an adjective meaning late. Examples and exercises.
 - [Compound words in Swedish](https://www.mamosta.se/en/swedish-compound-words): Swedish compound words are written as one word: sjuksköterska, datorskärm. Writing them apart (särskrivning) can change the meaning. Rules and examples.
 
 ## Språkguider
@@ -29,12 +34,18 @@
 - [När ska man sätta komma?](https://www.mamosta.se/guider/komma): Kommaregler i svenska på ett enkelt sätt: komma före men, efter bisats, vid uppräkning och inskott. Med exempel och övningar.
 - [Och eller att?](https://www.mamosta.se/guider/och-eller-att): Och eller att? I tal låter båda som ”å”. Lär dig när du ska skriva och och när du ska skriva att – med ett enkelt test och exempel.
 - [Var eller vart?](https://www.mamosta.se/guider/var-eller-vart): Var eller vart? Var handlar om plats och vart om riktning. Lär dig skillnaden med ett enkelt knep och exempel.
+- [Hem eller hemma?](https://www.mamosta.se/guider/hem-eller-hemma): Hem eller hemma, dit eller där, upp eller uppe? Hem visar riktning och hemma plats. Lär dig regeln för alla ordpar med exempel och övningar.
+- [Ligga eller lägga?](https://www.mamosta.se/guider/ligga-eller-lagga): Ligga eller lägga, sitta eller sätta, stå eller ställa? Lär dig skillnaden med ett enkelt knep, alla böjningsformer och övningar.
+- [I eller på?](https://www.mamosta.se/guider/i-eller-pa): I eller på? I Sverige men på Gotland, i skolan men på jobbet, i maj men på måndag. Lär dig de vanligaste mönstren med exempel och övningar.
+- [Fler eller mer?](https://www.mamosta.se/guider/fler-eller-mer): Fler eller mer? Fler används om saker man kan räkna, mer om mängder. Och flera betyder något annat. Lär dig skillnaden med exempel och övningar.
+- [Någon, något eller några?](https://www.mamosta.se/guider/nagon-nagot-nagra): Någon, något eller några – och ingen, inget eller inga? Formen styrs av ordet efter. Lär dig regeln, när du ska skriva inte någon, och öva.
 - [Sin eller hans?](https://www.mamosta.se/guider/sin-eller-hans): Sin, sitt och sina eller hans, hennes och deras? Lär dig när du ska använda det reflexiva possessiva pronomenet – med tydliga exempel.
 - [Stor eller liten bokstav?](https://www.mamosta.se/guider/stor-eller-liten-bokstav): Skrivs måndag, januari och svenska med stor eller liten bokstav? Här är reglerna för stor bokstav i svenska – med exempel.
 - [Ihop eller isär? I dag, i går, i stället](https://www.mamosta.se/guider/ihop-eller-isar): Ska man skriva i dag eller idag, i går eller igår, i stället eller istället? Här är vilka former som är rätt – och vilka som alltid skrivs isär.
 - [Enda eller ända?](https://www.mamosta.se/guider/enda-eller-anda): Enda eller ända? Enda betyder ”den enda, bara en” och ända betyder ”hela vägen” eller ”slutet”. Lär dig skillnaden med exempel och övningar.
 - [Än eller en?](https://www.mamosta.se/guider/an-eller-en): Än eller en? Skriv ”än” när du jämför (större än, mer än) och ”en” som artikel eller räkneord (en bok, en gång). Enkla regler och exempel.
 - [Sen eller sedan?](https://www.mamosta.se/guider/sen-eller-sedan): Ska man skriva sen eller sedan? Sedan passar i all text, sen är en kortform som funkar i vardaglig text. Och så betyder sen också ”försenad”.
+- [Ska eller skall?](https://www.mamosta.se/guider/ska-eller-skall): Ska eller skall? Båda är rätt, men ska rekommenderas i all slags text i dag – även i myndighetstexter och lagar. Här är vad som gäller.
 - [Mig eller mej?](https://www.mamosta.se/guider/mig-eller-mej): Mig eller mej, dig eller dej, ska eller skall? Båda formerna finns, men de passar i olika texter. Så väljer du rätt – med exempel.
 - [Förkortningar: t.ex., bl.a. och osv.](https://www.mamosta.se/guider/forkortningar): Hur skriver man t.ex., bl.a., osv. och dvs.? Här är de vanligaste svenska förkortningarna, hur de skrivs med punkt och när du hellre ska skriva ut orden.
 - [Siffror, datum och klockslag](https://www.mamosta.se/guider/siffror-och-datum): Ska man skriva tre eller 3? Hur skriver man datum, klockslag och stora tal på svenska? De viktigaste reglerna med tydliga exempel.
