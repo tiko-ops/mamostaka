@@ -9,6 +9,7 @@ const nextConfig = {
         { source: "/en", destination: "/en.html" },
         { source: "/en/:slug([a-z0-9-]+)", destination: "/en/:slug.html" },
         { source: "/ar", destination: "/ar.html" },
+        { source: "/ar/:slug([a-z0-9-]+)", destination: "/ar/:slug.html" },
         { source: "/ratta/:slug([a-z0-9-]+)", destination: "/ratta/:slug.html" },
         { source: "/guider", destination: "/guider/index.html" },
         // Bara slugs utan punkt, så att /guider/index.html inte skrivs om en gång till
